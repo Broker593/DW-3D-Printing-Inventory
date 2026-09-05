@@ -47,7 +47,8 @@
   .slegend .k em{font-style:normal;color:var(--muted);font-size:11px}
   .slegend .v{font-weight:600;font-variant-numeric:tabular-nums}
   .slegend .pc{color:var(--muted);font-size:11px;width:34px;text-align:right}
-  .shelf,.cpk{border-top:1px solid var(--rule);padding-top:12px;margin-bottom:16px}
+  .shelf{border-top:1px solid var(--rule);padding-top:12px;margin-bottom:16px}
+  .cpk{border-top:1px solid var(--hair);padding-top:12px;margin-bottom:16px}
   .cpk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
   .cpk-grid div{border-left:3px solid var(--ink);padding-left:10px}
   .cpk-grid div:first-child{border-color:var(--red)}
@@ -57,6 +58,12 @@
   .cpk-bar{height:6px;background:var(--fill);margin-top:8px;position:relative}
   .cpk-bar i{position:absolute;left:0;top:0;height:100%;background:var(--ink)}
   .cpk-grid div:first-child .cpk-bar i{background:var(--red)}
+  .fam-list{max-height:260px;overflow:auto;font-size:13px}
+  .fam-list div{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px dotted var(--hair)}
+  .fam-list i{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .fam-list span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fam-list em{font-style:normal;color:var(--muted);font-size:11px;margin-left:6px}
+  .fam-list b{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:15px}
   .src{font-size:11px;color:var(--muted);font-style:italic;margin-top:10px;line-height:1.5}
   @media (max-width:560px){.figs{grid-template-columns:1fr 1fr;gap:10px 0}.figs div:nth-child(2){border-right:none}.slegend{grid-template-columns:1fr}}
   /* feature grid */
@@ -159,11 +166,6 @@
     <div><b id="tColors">0</b><span>Colors</span><small id="fColors"></small></div>
     <div><b id="tHotends">0</b><span>Hotends</span><small id="fHotends"></small></div>
   </div>
-  <div class="shelf">
-    <div class="spend-hd"><div class="lbl">The shelf, by color<small>Rolls on hand, grouped the way the Hue sort groups them</small></div></div>
-    <div class="sbar" id="shelfbar"></div>
-    <div class="slegend" id="shelflegend"></div>
-  </div>
   <div class="cpk">
     <div class="spend-hd"><div class="lbl">Cost per kilogram<small>Filament only, before tax, by where it was bought</small></div></div>
     <div class="cpk-grid" id="cpk"></div>
@@ -173,6 +175,11 @@
     <div class="sbar" id="sbar"></div>
     <div class="slegend" id="slegend"></div>
     <div class="src">Sources: Bambu Lab order records (both accounts), Amazon and Ali order histories. Awaiting item split, not yet counted: three Bambu orders that mixed printers with an AMS 2 Pro, hotends, a cutting kit, and 21 rolls; the printing-account order; pre-2026 magnets.</div>
+  </div>
+  <div class="shelf" style="margin-bottom:0">
+    <div class="spend-hd"><div class="lbl">The shelf, by color<small>Rolls on hand, grouped the way the Hue sort groups them</small></div></div>
+    <div class="sbar" id="shelfbar"></div>
+    <div class="slegend" id="shelflegend"></div>
   </div>
 </div>
 <div class="feat-h"><span>Most stocked</span><span>Top ten colors by rolls on hand</span></div>
@@ -694,13 +701,30 @@ const SPEND_TOTAL=SPEND.reduce((a,s)=>a+s[1],0);
 const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
 const fmt$2=n=>"$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const FAMILY_COLOR={Red:"#c8102e",Orange:"#f07a1a",Yellow:"#f2c744",Green:"#3f8e43",Teal:"#2aa7a0",Blue:"#1f4ea3",Purple:"#6a4bb5",Pink:"#e89ac0",Brown:"#7a5236",White:"#f3efe6",Gray:"#9a9a9a",Black:"#1a1a1a"};
+function familyPopHTML(f,items,n){
+  items=items.slice().sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color));
+  return `<div class="pop-top"><div class="pop-dot" style="background:${FAMILY_COLOR[f]}"></div><div><div class="pop-title">${f}</div><div class="pop-fam">${n} roll${n===1?"":"s"} \u00b7 ${items.length} color${items.length===1?"":"s"}</div></div></div>
+    <div class="fam-list">${items.map(d=>`<div><i style="background:${d.hex}"></i><span>${d.color}<em>${d.brand==="Bambu Lab"?"Bambu":d.brand}${d.type?" \u00b7 "+d.type:""}</em></span><b>${d.qty}</b></div>`).join("")}</div>`;
+}
+function attachFamPop(el,f,items,n){
+  const show=()=>{pop.innerHTML=familyPopHTML(f,items,n);pop.style.display="block";const r=el.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;let left=r.left+window.scrollX+r.width/2-pw/2;left=Math.max(window.scrollX+8,Math.min(left,window.scrollX+window.innerWidth-pw-8));let top=r.bottom+window.scrollY+8;if(r.bottom+ph+16>window.innerHeight&&r.top>ph+16)top=r.top+window.scrollY-ph-8;pop.style.left=left+"px";pop.style.top=top+"px";requestAnimationFrame(()=>pop.classList.add("show"));popRow=el;};
+  el.addEventListener("mouseenter",()=>{clearTimeout(popTimer);popTimer=setTimeout(show,160);});
+  el.addEventListener("mouseleave",()=>{clearTimeout(popTimer);popTimer=setTimeout(hidePop,150);});
+  el.addEventListener("click",e=>{e.preventDefault();popRow===el&&pop.classList.contains("show")?hidePop():show();});
+}
 function renderShelf(){
   const owned=DATA.filter(d=>d.grp!=="Parts"&&d.qty>0);
-  const counts={};owned.forEach(d=>counts[d.family]=(counts[d.family]||0)+d.qty);
-  const rows=FAMILIES.filter(f=>counts[f]).map(f=>[f,counts[f]]);
+  const byFam={};owned.forEach(d=>{(byFam[d.family]=byFam[d.family]||[]).push(d);});
+  // merge spool/refill of the same color for the list
+  const merged={};Object.keys(byFam).forEach(f=>{const m={};byFam[f].forEach(d=>{const k=d.fam+"|"+d.color;(m[k]=m[k]||{...d,qty:0}).qty+=d.qty;});merged[f]=Object.values(m);});
+  const rows=FAMILIES.filter(f=>byFam[f]).map(f=>[f,byFam[f].reduce((a,d)=>a+d.qty,0)]);
   const total=rows.reduce((a,r)=>a+r[1],0);
-  $("#shelfbar").innerHTML=rows.map(([f,n])=>`<i style="flex:${n};background:${FAMILY_COLOR[f]}" title="${f}: ${n}"></i>`).join("");
-  $("#shelflegend").innerHTML=rows.map(([f,n])=>`<div><i style="background:${FAMILY_COLOR[f]}"></i><span class="k">${f}</span><span class="v">${n}</span><span class="pc">${Math.round(100*n/total)}%</span></div>`).join("");
+  const bar=$("#shelfbar"),leg=$("#shelflegend");bar.innerHTML="";leg.innerHTML="";
+  rows.forEach(([f,n])=>{
+    const seg=document.createElement("i");seg.style.flex=n;seg.style.background=FAMILY_COLOR[f];seg.style.cursor="pointer";bar.appendChild(seg);
+    const row=document.createElement("div");row.style.cursor="pointer";row.innerHTML=`<i style="background:${FAMILY_COLOR[f]}"></i><span class="k">${f}<em> \u00b7 ${merged[f].length} color${merged[f].length===1?"":"s"}</em></span><span class="v">${n}</span><span class="pc">${Math.round(100*n/total)}%</span>`;leg.appendChild(row);
+    attachFamPop(seg,f,merged[f],n);attachFamPop(row,f,merged[f],n);
+  });
 }
 // filament cost per kg — priced rolls only (pending Bambu orders excluded)
 const CPK=[["Bambu",1102.42,66,"67 rolls priced \u00b7 24 in pending orders, 14 on the other account not priced"],["Amazon",343.19,18.5,"19 rolls"],["Ali",46.82,4,"4 rolls"]];

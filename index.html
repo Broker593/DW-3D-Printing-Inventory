@@ -621,8 +621,15 @@ function renderList(){
   const rows=visible();
   if(!rows.length){host.innerHTML='<div class="card"><div class="empty">Nothing here</div></div>';return;}
   SECTIONS.forEach(sname=>{
-    const items=rows.filter(d=>d.sec===sname).sort(cmp);
+    let items=rows.filter(d=>d.sec===sname);
     if(!items.length)return;
+    if(sname!=="PLA"&&items[0].grp==="Parts"){/* parts stay as-is */}
+    else{
+      const m=new Map();
+      items.forEach(d=>{const k=d.fam+"|"+d.color;if(!m.has(k))m.set(k,Object.assign({},d,{items:[d],qty:0,base:0}));const g=m.get(k);g.items.push(d);g.qty+=d.qty;g.base+=d.base;});
+      items=[...m.values()].map(g=>{g.items=g.items.slice(1);return g;});
+    }
+    items.sort(cmp);
     const n=items.reduce((a,d)=>a+d.qty,0);
     const unit=items[0].grp==="Parts"?(n===1?"piece":"pieces"):(n===1?"roll":"rolls");
     const sec=document.createElement("div");sec.className="section";
@@ -646,8 +653,9 @@ function renderList(){
         ${sname==="PLA"?`<div class="types">${typeCells(d)}</div>`:""}
         <div class="stepper"><button aria-label="decrease">&minus;</button><div class="v ${d.qty===0?"zero":""}">${d.qty}</div><button aria-label="increase">+</button></div>`;
       const btns=row.querySelectorAll(".stepper button");
-      btns[0].onclick=()=>{if(d.qty>0){d.qty--;save();renderAll();}};
-      btns[1].onclick=()=>{d.qty++;save();renderAll();};
+      const parts=d.items||[d];
+      btns[0].onclick=()=>{const src=parts.filter(x=>x.qty>0).sort((a,b)=>(a.fmt==="Refill"?0:1)-(b.fmt==="Refill"?0:1))[0];if(src){src.qty--;save();renderAll();}};
+      btns[1].onclick=()=>{const dst=parts.find(x=>x.fmt==="Spool")||parts[0];dst.qty++;save();renderAll();};
       attachPop(row,d);card.appendChild(row);
     });
     host.appendChild(sec);
@@ -663,7 +671,8 @@ function popHTML(d){
   if(d.type)rows.push(["Type",d.type]);
   if(d.code)rows.push(["SKU",d.code]);
   if(d.grp!=="Parts"){
-    if(d.fmt==="Refill"||d.fmt==="Spool")rows.push(["Format",d.fmt]);
+    if(d.items&&d.items.length>1){const s=d.items.filter(x=>x.qty>0).map(x=>`${x.fmt} \u00d7${x.qty}`).join(" \u00b7 ");rows.push(["Format",s||"\u2014"]);}
+    else if(d.fmt==="Refill"||d.fmt==="Spool")rows.push(["Format",d.fmt]);
     rows.push(["Roll",d.kg+" kg"]);rows.push(["Brand",d.brand]);
     rows.push(["Source",d.src||"Bambu Lab store"]);rows.push(["Purchased",isCat(d)?"\u2014":d.base]);
   }else rows.push(["Source",d.src||""]);

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Filament</title>
+<style>
+  :root{--bg:#f5f5f7;--card:#fff;--ink:#1d1d1f;--muted:#6e6e73;--hair:rgba(60,60,67,.12);--blue:#0071e3;--seg:#e9e9eb;--fill:#f2f2f7;--check:#1d1d1f}
+  @media (prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--ink:#f5f5f7;--muted:#98989d;--hair:rgba(84,84,88,.5);--blue:#0a84ff;--seg:#2c2c2e;--fill:#2c2c2e;--check:#f5f5f7}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+  body{padding:max(20px,env(safe-area-inset-top)) 16px 48px}
+  .wrap{max-width:680px;margin:0 auto}
+  h1{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:8px 0 18px}
+  .summary{background:var(--card);border-radius:16px;padding:18px 20px;display:flex;gap:10px;margin-bottom:22px}
+  .summary div{flex:1}.summary b{display:block;font-size:26px;font-weight:600;letter-spacing:-.02em}.summary span{font-size:13px;color:var(--muted)}
+  .search{width:100%;display:block;margin-bottom:10px;height:38px;background:var(--seg);border:none;border-radius:10px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);outline:none;-webkit-appearance:none;min-width:0}
+  .search::placeholder{color:var(--muted)}
+  .segment{display:flex;background:var(--seg);border-radius:9px;padding:2px;margin-bottom:26px}
+  .sortrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .sortrow>span{font-size:13px;color:var(--muted);flex:none;width:34px}
+  .segment.mini{flex:1;margin:0}
+  .segment.mini button{font-size:12px;padding:5px 0}
+  .segment button{flex:1;border:none;background:none;font:inherit;font-size:13px;font-weight:500;color:var(--ink);padding:6px 0;border-radius:7px;cursor:pointer}
+  .segment button.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12);font-weight:600}
+  .section{margin-bottom:26px}
+  .section-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 4px 8px}
+  .section-h h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .section-h span{font-size:13px;color:var(--muted)}
+  .card{background:var(--card);border-radius:14px;overflow:hidden}
+  .row{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 16px;position:relative}
+  .row+.row::before,.thead+.row::before{content:"";position:absolute;left:58px;right:0;top:0;height:1px;background:var(--hair)}
+  .dot{width:28px;height:28px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  @media (prefers-color-scheme:dark){.dot{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}}
+  .meta{flex:1;min-width:0;cursor:default}
+  @media (hover:none){.meta{cursor:pointer}}
+  .name{font-size:16px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sub{font-size:13px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row.cat .name{color:var(--muted);font-weight:400}.row.cat .dot{opacity:.45}.row.out .name{color:var(--muted)}
+  /* type grid */
+  .types{display:grid;grid-template-columns:repeat(5,38px) 62px;flex:none;align-items:center}
+  .types span{text-align:center;font-size:14px;color:var(--check);line-height:1}
+  .types span.o{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thead{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 16px;background:var(--card)}
+  .thead .lead{flex:1;min-width:0}
+  .thead .types button{border:none;background:none;font:inherit;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;padding:2px 0;border-radius:6px;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .thead .types button.on{color:var(--blue)}
+  .thead .stepper-ghost{width:94px;flex:none}
+  @media (max-width:520px){
+    .types{grid-template-columns:repeat(5,24px) 44px}
+    .thead{align-items:flex-end;padding-top:10px}
+    .thead .types{align-items:end}
+    .thead .types button{font-size:10px;writing-mode:vertical-rl;transform:rotate(180deg);height:58px;line-height:1;padding:0;overflow:visible;text-overflow:clip;justify-self:center}
+    .types span{font-size:12px}.types span.o{font-size:9px}
+    .row{gap:8px}.thead{gap:8px}.thead .stepper-ghost{width:90px}
+  }
+  .stepper{display:flex;align-items:center;background:var(--fill);border-radius:8px;flex:none;height:30px}
+  .stepper button{width:32px;height:30px;border:none;background:none;color:var(--blue);font:inherit;font-size:20px;line-height:1;cursor:pointer;border-radius:8px}
+  .stepper button:active{background:var(--hair)}.stepper .v{min-width:26px;text-align:center;font-size:16px;font-weight:600}.stepper .v.zero{color:var(--muted);font-weight:400}
+  .pop{position:absolute;z-index:30;width:292px;background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.18),0 0 0 1px var(--hair);display:none;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+  .pop.show{display:block;opacity:1;transform:none}
+  .pop-top{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+  .pop-img{width:64px;height:64px;border-radius:12px;object-fit:cover;flex:none;background:var(--fill);box-shadow:inset 0 0 0 1px var(--hair)}
+  .pop-dot{width:64px;height:64px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  .pop-title{font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.2}.pop-fam{font-size:13px;color:var(--muted);margin-top:2px}
+  .pop-grid{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:13px}.pop-grid dt{color:var(--muted)}.pop-grid dd{font-weight:500;text-align:right}
+  .pop a{display:block;margin-top:12px;text-align:center;background:var(--fill);color:var(--blue);text-decoration:none;font-size:14px;font-weight:500;padding:8px;border-radius:9px}
+  .chart{display:flex;align-items:flex-end;gap:6px;padding:26px 16px 8px;overflow-x:auto;min-height:220px}
+  .col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:26px}
+  .bar{width:100%;max-width:34px;border-radius:7px 7px 3px 3px;background:var(--blue);position:relative;transition:opacity .15s;cursor:default}
+  .bar.saved{opacity:.45}
+  .bar:hover{opacity:.8}
+  .bar-n{font-size:11px;font-weight:600;text-align:center;margin-bottom:4px;color:var(--muted)}
+  .bar-x{font-size:10px;color:var(--muted);white-space:nowrap}
+  .col.blank .slot{width:100%;max-width:34px;height:14px;border-radius:6px;border:1.5px dashed var(--hair)}
+  .legend{display:flex;gap:16px;padding:6px 16px 14px;font-size:11px;color:var(--muted)}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--blue);margin-right:5px;vertical-align:-1px}
+  .legend i.saved{opacity:.45}
+  .quiet{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  .quiet button{border:none;background:none;font:inherit;font-size:14px;color:var(--blue);cursor:pointer}
+  .empty{padding:32px 16px;text-align:center;color:var(--muted);font-size:15px}
+  .note{font-size:12px;color:var(--muted);text-align:center;margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Filament</h1>
+<div class="summary">
+  <div><b id="tRolls">0</b><span>rolls</span></div>
+  <div><b id="tKg">0</b><span>kg</span></div>
+  <div><b id="tColors">0</b><span>colors</span></div>
+  <div><b id="tHotends">0</b><span>hotends</span></div>
+</div>
+<input class="search" id="q" type="search" placeholder="Search" autocomplete="off">
+<div class="sortrow"><span>Sort</span>
+  <div class="segment mini" id="sort">
+    <button data-s="type" class="on">Type</button><button data-s="tone">Tone</button><button data-s="bought">Purchased</button><button data-s="name">Name</button>
+  </div>
+</div>
+<div class="segment" id="segment">
+  <button data-g="All" class="on">All</button><button data-g="PLA">PLA</button><button data-g="PETG">PETG</button><button data-g="Other">Other</button><button data-g="Parts">Parts</button><button data-g="Magnets">Magnets</button>
+</div>
+<div id="list"></div>
+<div class="pop" id="pop" role="tooltip"></div>
+<div class="quiet">
+  <button id="toggleCat">Show catalog colors</button>
+  <button id="csv">Export CSV</button>
+  <button id="reset">Reset counts</button>
+</div>
+<div class="note">Bambu store (3 accounts), Amazon, and AliExpress orders, Apr&ndash;Aug 2026. Counts save in this browser. Tap a name for details.</div>
+</div>
+
+<script>
+const DATA = [
+ // PLA Basic (29)
+ {fam:"PLA Basic",grp:"PLA",color:"Jade White",code:"10100",hex:"#F2F3EF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/825eebc0e105490dbbc7a9abb287db1f/Rectangle_1279.jpg",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Jade White",code:"10100",hex:"#F2F3EF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/825eebc0e105490dbbc7a9abb287db1f/Rectangle_1279.jpg",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Blue",code:"10601",hex:"#0A2989",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/54670201f19c4a079a23de8251c4b829/0cbb7037758240b4873f9a90ab4dbe10.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Blue",code:"10601",hex:"#0A2989",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/54670201f19c4a079a23de8251c4b829/0cbb7037758240b4873f9a90ab4dbe10.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Yellow",code:"10400",hex:"#F4EE2A",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/c58234d6b11340788c0c03548222b8bd/3b0e7a2600f44088b06cb185a3f87e04.media",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Blue Grey",code:"10602",hex:"#5B6579",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4aab90399fe34105a3af69098a6e7d50/4e3637d99a73483bab1ce84fd7628a36.media",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Maroon Red",code:"10205",hex:"#772B2A",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9a16426731d04493bfbc93d671b8286f/6ddd230906194a7fa5403e2cc1d7ae77.png",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Cobalt Blue",code:"10604",hex:"#0056B8",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9148bcf8138d4223892988d4b850079f/abd43099726847d6b189bec773ef1833.png",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Black",code:"10101",hex:"#101010",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/c087aa5167c94817b0795fd821ac4116/352e8e214fb4462ba7e6b1381c32fe9f.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Mistletoe Green",code:"10502",hex:"#3F8E43",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/5a9e1fca8bba4dfca7579ae39f0c6a07/21f4f3191dfd4fd58f68fdb8b2be4ec4.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Beige",code:"10201",hex:"#F7E6DE",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/eaee9c70ea5f4c74bfd4f1eb63c34a67/fa231273753d477b9d99afa19761f820.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Cyan",code:"10603",hex:"#0086D6",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/af1ce799941a407bbc3964e00dc3191a/d665a3540d334035abc278b0b80e4898.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Light Gray",code:"10104",hex:"#D1D3D5",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/c323ac060ebe4bcdb046c06f5d09f346/b7c9db2942374e2793d9865461076ac4.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Dark Gray",code:"10105",hex:"#545454",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/a08055776b464878bb311a88e1518931/03aedbaaff8943f892b58438f98cac89.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Silver",code:"10102",hex:"#A6A9AA",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/68ca516ec31046738cf567505471be03/8b789e9f61b14b54a248f813ea523191.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Sunflower Yellow",code:"10402",hex:"#FEC600",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/949b1bda3c134a23b3634dec8c851221/f84eee46ecb848e69c2e6a5c197a9958.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Brown",code:"10800",hex:"#6B4E3D",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4262bd833add4a43a5bd60dde61a13fc/ae017fb32657451aaa0eecec9ad1b748.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Pumpkin Orange",code:"10301",hex:"#FF9016",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/6feea19ab1c64d4ba10aeb1b33285a07/ff733c26d9be457fb44ee270f2720827.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Red",code:"10200",hex:"#C12E1F",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/c095828cb46044269274717bfbab0566/377d91b1263f40968ca1973b0d2839e4.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Gold",code:"10401",hex:"#E4BD68",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/d37bc626a6a54850868919dde038b48b/969f0c8921214ece8dbced65341fcbce.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Bronze",code:"10801",hex:"#847D48",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/375701952d3440f690199d26ffb7661f/8b75222ce246480184025993a40b948b.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Indigo Purple",code:"10701",hex:"#482960",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9964ecd589c8470fb6fac72d2ce8c251/d65aebf923b840af881f23286fb7d9b3.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Purple",code:"10700",hex:"#5E43B7",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/3feef4907f88467fa6db5f075d043ad7/8324030333a34c54b8472e5682d19f3f.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Bright Green",code:"10503",hex:"#35C43B",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/187c939db99748169d23888c93982f8a/5578164bff51480a9c550ef390348ec1.png",qty:1},
+ // PLA Basic — in catalog, not yet bought
+ {fam:"PLA Basic",grp:"PLA",color:"Bambu Green",code:"10501",hex:"#00AE42",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/210e37dd99f24949b9be3270effb3be0/7044786b85d44df9bbe872c6e5d87518.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Gray",code:"10103",hex:"#8E9089",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/3ad1b7f0aa4a4ea6af2a2e7121553bbf/d870efeaced648c6a3f390db1f55f725.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Orange",code:"10300",hex:"#FF6A13",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/145d5d616c334260a8f4f6a3a54cf87c/3b7d85f463734924842171fab890a603.media",qty:0},
+ {fam:"PLA Basic",grp:"PLA",color:"Pink",code:"10203",hex:"#F5B6CD",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/2d7c287e96f548998468abd5292e6a5c/16d81c82e3ac470c9abccfdda3e98ded.media",qty:0},
+ {fam:"PLA Basic",grp:"PLA",color:"Hot Pink",code:"10204",hex:"#F5547C",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/ff8fe218b8494acdb6762c3b61b20174/ed844344991348f79a91dfe9aeba362e.png",qty:0},
+ {fam:"PLA Basic",grp:"PLA",color:"Magenta",code:"10202",hex:"#EC008C",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/32faf71cc7ef49078d00e066f26a0af1/e09bc62c304443d8b33302b42f8ef2ca.media",qty:0},
+ {fam:"PLA Basic",grp:"PLA",color:"Turquoise",code:"10605",hex:"#00B1B7",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/8a6f3f028f5a4b5782fc5c0730d127ec/9f0327d603c345ac99fcb795cc783dff.png",qty:0},
+ {fam:"PLA Basic",grp:"PLA",color:"Cocoa Brown",code:"10802",hex:"#6F5034",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4bbaa998c8f34ab89cb0ce632fbf632f/91d13e7d3dd54a89948200e82353998f.png",qty:1},
+ // PLA Matte (25)
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Charcoal",code:"11101",hex:"#2B2B2B",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/2588d450183643ad9908c3b2c014493c/9873c26227394682ab9270a8e0868f0f.media",qty:3},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Charcoal",code:"11101",hex:"#2B2B2B",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/2588d450183643ad9908c3b2c014493c/9873c26227394682ab9270a8e0868f0f.media",qty:4},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Ivory White",code:"11100",hex:"#F1EFE4",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4dfda2ea267145fea524b5b01183a1d3/c8693a709e0442f384bad600d03fe0c3.media",qty:2},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Ivory White",code:"11100",hex:"#F1EFE4",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4dfda2ea267145fea524b5b01183a1d3/c8693a709e0442f384bad600d03fe0c3.media",qty:3},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Blue",code:"11602",hex:"#1C2A50",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/f005ddb1b3e94256a6023088a371c915/353e1dc2aced4c808db0c85d394bbee6.media",qty:4},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Marine Blue",code:"11600",hex:"#0078BF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9388663cc50f48339710e5bb2444ccfb/c3f24581020141108a78632680271e09.media",qty:2},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Nardo Gray",code:"11104",hex:"#757575",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/35632053903347a7b4feabe27c0a5fd0/Rectangle_4543.png",qty:2},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Scarlet Red",code:"11200",hex:"#DE4343",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/507a8943f9ad475087200d6198752cb1/e97d6f747715417d8c2d5c0aeb2554f0.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Desert Tan",code:"11401",hex:"#E8DBB7",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/7f61d6e2c5d646aba88a53cd288c29d6/d05a32c4b098422db92848e2b4d9c90e.media",qty:2},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Red",code:"11202",hex:"#BB3D43",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/f612ed2615aa4c29bbefeed16e8bc46e/16a6cddd38c5427fbe0c043acf4fdec4.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Lemon Yellow",code:"11400",hex:"#F7D959",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/80f14ed4a26d437c87a2c75cd9e2fd61/147b2c8c833e4625a552584ce4ac94e2.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Terracotta",code:"11203",hex:"#B15533",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/beed1f7cc49c46658fc22dd911f75750/Rectangle_4542.png",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Green",code:"11501",hex:"#38574A",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/941042ae51b44dfb9676fe6c466bd427/cf87d8d749a64146abd1f02c4a9a79ad.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Bone White",code:"11103",hex:"#CBC6B8",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/a4fa9b00833d4034ac3ee2c23b6572fe/Rectangle_4535.png",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Ash Gray",code:"11102",hex:"#9B9EA0",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9501600ddc594f93a8c68cc790601582/bac67500773d4a7fbd285fbfc2aaa9a7.media",qty:2},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Sakura Pink",code:"11201",hex:"#E8AFCF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/753cb281a8eb43429252a899494509be/a54f8229fa6e4c2eb714c34972fa6a82.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Sky Blue",code:"11603",hex:"#56B7E6",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9f13bc24194348eab9cc55f54c1aaa4b/Rectangle_4540.png",qty:1},
+ // PLA Matte — in catalog, not yet bought
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Ice Blue",code:"11601",hex:"#A3D8E1",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/a530c57b4be5472ca6db0fa868c1ba0a/c07627cfd70f4ccfa787d4d12dad6d4b.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Apple Green",code:"11502",hex:"#9CCE55",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/e96f1a0495744cae916e0ebac015a616/Rectangle_4539.png",qty:0},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Grass Green",code:"11500",hex:"#5B8A3C",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/ba9e1c06897c4aea8ccf11f017fa4ecb/f375a162834a4dd6ad40b3d3cd2bd23b.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Mandarin Orange",code:"11300",hex:"#F27C39",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9e35cf5a500946929370ba9bfda7c589/50858ad786c3414daaacb1f29eead215.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Lilac Purple",code:"11700",hex:"#AE96D4",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/98824cdda2ff471e98ceed81607d9244/47be9dad231d4e7c9d84086cd677e8dd.media",qty:0},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Plum",code:"11204",hex:"#8E3B65",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/1b4fd1fc84064a3b97d75350342f690f/Rectangle_4537.png",qty:0},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Caramel",code:"11803",hex:"#BE8A55",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/ec3690a87060481da0726bea544bcfb4/Rectangle_4541.png",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Latte Brown",code:"11800",hex:"#BFA284",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c0b1bb76cc7a43ce8ba53fc4f4d380f9/80e94033ac314bb58c08c48a93156c8b.media",qty:0},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Brown",code:"11801",hex:"#4D3324",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/50f2cab7433b45feadc65018787ceae4/926ff77d477d4f6c9fcb8c76fdefa7b2.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Chocolate",code:"11802",hex:"#3A2A20",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/2cd3690d622444d3bd60e2db970c7c0f/Rectangle_4536.png",qty:1},
+ // PLA Silk+ (5)
+ {fam:"PLA Silk+",grp:"PLA",color:"Candy Red",code:"13205",hex:"#D02727",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/83ead94c84eb418d81347df534869637/74d0884c3c3e48deb606dff285cb9c50.png",qty:1},
+ {fam:"PLA Silk+",grp:"PLA",color:"Silver",code:"13109",hex:"#C8C8C8",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/d94ce891eea54282b2a4fd12658385ca/07d108b79a8a4b2bbf2e1087381a720b.png",qty:1},
+ {fam:"PLA Silk+",grp:"PLA",color:"Titan Gray",code:"13108",hex:"#5F6367",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9bedc7ffdbfe4d63a456d7e1d454f27a/8508648cec13489ab718c418b5f1f6fc.png",qty:1},
+ {fam:"PLA Silk+",grp:"PLA",color:"Blue",code:"13604",hex:"#008BDA",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4674d5e282be42519fa5895bfece3864/a8ca2a3c76ed4b9aa59cbe9252a257da.png",qty:1},
+ {fam:"PLA Silk+",grp:"PLA",color:"White",code:"13110",hex:"#F4F4F4",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/d668a260a33a4169954d3438e852646d/5710aedc075446f694ec8a393a779be2.png",qty:1},
+ {fam:"PLA Translucent",grp:"PLA",color:"Ice Blue",code:"13610",hex:"#BFE4F2",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/8bca6cc749bf4010b10cd6b92a53a3b2/Rectangle_4557.png",qty:1},
+ // PLA specialty (7)
+ {fam:"PLA Marble",grp:"PLA",color:"Red Granite",code:"13201",hex:"#AD4E38",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/f018eb8c4f764652a3454c6920ab27e2/e307b76c7c9f46b5a8c8782feb9ff23e.media",qty:1},
+ {fam:"PLA Marble",grp:"PLA",color:"White Marble",code:"13103",hex:"#F7F3F0",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/44120e4b0fd241e8a3743a1007b3b85c/8cf690c4676c41c68f0ca540f84785a5.media",qty:1},
+ {fam:"PLA Wood",grp:"PLA",color:"Black Walnut",code:"13107",hex:"#4F3B26",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/87f38658a86d46bfa25b8983d61f672f/55bfe8a8f9e64d0ebd78df70a08296bd.png",qty:1},
+ {fam:"PLA Sparkle",grp:"PLA",color:"Onyx Black Sparkle",code:"13101",hex:"#2D2B28",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/c94563c3b70a46c285eeb00340edacaa/39cb6cb6eeee4eb088b240625c54450d.media",qty:1},
+ {fam:"PLA Tough+",grp:"PLA",color:"Orange",code:"12301",hex:"#FF6A13",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/190467eafb084a1f85ebb5fecafa010a/Rectangle_4558.jpg",qty:1},
+ {fam:"PLA Aero",grp:"PLA",color:"Gray",code:"14104",hex:"#808A87",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9ca7834d953c4899a82db34be5fac7ff/173c55194eba466fa2aab8bbe39d8dd8.png",qty:1},
+ {fam:"PLA-CF",grp:"PLA",color:"Lava Gray",code:"14101",hex:"#4D5054",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/ac6112026f4946d3915747bc14f30a43/427503a66a8a4b2e8f0749fef1b2f3e9.media",qty:1},
+ {fam:"PLA Glow",grp:"PLA",color:"Glow Green",code:"15500",hex:"#9BF25B",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/5218f88774e34104a0359c400a99dcbd/0592e39f21c74879a6cd329646c157d5.media",qty:1},
+ // Amazon — third-party PLA
+ {fam:"eSUN PLA+",grp:"PLA",color:"Bone White",code:"",src:"Amazon",hex:"#EDE6D6",fmt:"Spool",qty:1},
+ {fam:"eSUN PLA+",grp:"PLA",color:"Fire Engine Red",code:"",src:"Amazon",hex:"#CE2029",fmt:"Spool",qty:1},
+ {fam:"Overture Matte PLA",grp:"PLA",color:"Matte Light Brown",code:"",src:"Amazon",hex:"#B98B5F",fmt:"Spool",qty:1},
+ {fam:"Polymaker Matte PLA",grp:"PLA",color:"Marble Sandstone",code:"",src:"Amazon",hex:"#C9B399",fmt:"Spool",qty:1},
+ {fam:"SUNLU Marble PLA",grp:"PLA",color:"Cool White",code:"",src:"Amazon",hex:"#F4F6F5",fmt:"Spool",qty:1},
+ {fam:"SUNLU Marble PLA",grp:"PLA",color:"Light Grey",code:"",src:"Amazon",hex:"#C7CBCD",fmt:"Spool",qty:1},
+ {fam:"SUNLU Marble PLA",grp:"PLA",color:"Bone Beige",code:"",src:"Amazon",hex:"#E4D5B8",fmt:"Spool",qty:1},
+ {fam:"SUNLU Marble PLA",grp:"PLA",color:"Brick Red",code:"",src:"Amazon",hex:"#9E3B32",fmt:"Spool",qty:1},
+ {fam:"SUNLU Wood PLA",grp:"PLA",color:"Wood Natural",code:"",src:"Amazon",hex:"#C8A171",fmt:"Spool",qty:1},
+ {fam:"SUNLU Wood PLA",grp:"PLA",color:"Wood Cherry",code:"",src:"Amazon",hex:"#8E4A36",fmt:"Spool",qty:1},
+ {fam:"SUNLU Wood PLA",grp:"PLA",color:"Wood Maple",code:"",src:"Amazon",hex:"#D3A264",fmt:"Spool",qty:1},
+ {fam:"SUNLU Wood PLA",grp:"PLA",color:"Wood Walnut",code:"",src:"Amazon",hex:"#5C4229",fmt:"Spool",qty:1},
+ {fam:"GIANTARM Silk PLA",grp:"PLA",color:"Gold",code:"",src:"Amazon",hex:"#D4AF37",fmt:"Spool",qty:1},
+ // AliExpress
+ {fam:"ANYCUBIC PLA",grp:"PLA",color:"Texture Red",code:"",src:"AliExpress",hex:"#B3262A",fmt:"Spool",qty:2},
+ {fam:"ANYCUBIC PLA",grp:"PLA",color:"Black",code:"",src:"AliExpress",hex:"#141414",fmt:"Spool",qty:2},
+ // PETG (5)
+ {fam:"PETG HF",grp:"PETG",color:"Orange",code:"33300",hex:"#FF911A",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/5c5e4de6b8424bb8b84793e8dcc9802e/bfa461028ea3467aa362bbe369a84500.png",qty:1},
+ {fam:"PETG HF",grp:"PETG",color:"Yellow",code:"33400",hex:"#FFD00F",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/58af1b6933954bd5af530072c5e9c5b1/884a185a0d6e4b58a9c055dcfabe7174.png",qty:1},
+ {fam:"PETG HF",grp:"PETG",color:"White",code:"33100",hex:"#F5F5F2",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4a7f9361225f4f69b388615e247f3b62/d0124e2bbb174c8ba1bad0675d35e37a.png",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Reflex Blue",code:"30603",hex:"#1F3696",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/0a859e38583a48c496395f8a2dbce944/Rectangle_4614.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"White",code:"30106",hex:"#F4F4F1",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/3193b19f31b84ea2a91fa98b3929ca2a/Rectangle_4610.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Gray",code:"30107",hex:"#9EA2A5",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/b60f55d01ff34a74955e7cfa63774578/Rectangle_4611.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Red",code:"30201",hex:"#C63B34",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/7f178cfa2e2949cab16d65766809bd9e/Rectangle_4612.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Misty Blue",code:"30108",hex:"#A9C7D8",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/f7d177dcd90c4180a8d105ebd8522adf/Misty_Blue.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Navy Blue",code:"30604",hex:"#1F3A63",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/2e65b30a87634dab96b3178ec99cf1da/Navy_Blue.jpg",qty:1},
+ {fam:"PETG Translucent",grp:"PETG",color:"Clear",code:"32101",hex:"#EDEFF0",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/f4dd56ed2651490b96abe80c7dc9dcad/daf1de2327714f57bd6aa32670d329cc.media",qty:1},
+ // PETG HF — in catalog, not yet bought
+ {fam:"PETG HF",grp:"PETG",color:"Black",code:"33102",hex:"#151515",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/6c735633c22748908ff584f9f5e1de89/0cf39d0e4c6c43b38fef498561894508.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Dark Gray",code:"33103",hex:"#4A4A4A",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c5498dad6adb4a4eaadde859a7f997ea/1607ecea09a94ff7b3d985685aa31d54.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Gray",code:"33101",hex:"#9FA3A6",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/5582df632ed74f38a00384ddb2c2064e/9a7dade47ad44a37a39325b7363a0370.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Cream",code:"33401",hex:"#F3E9CE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/13884494e0354d6f952db38ca365f3e0/61202de96c7c49ccab34f0cc001157ee.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Red",code:"33200",hex:"#D32E2E",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/709cf02acaca4145952913934f200a53/6f6460b12d9348e99b5070a8284c0409.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Peanut Brown",code:"33801",hex:"#A5764C",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/365fda6e85eb4d8896228f46a1d544b0/99c7222bb9d644df8f46109bb1a099da.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Lime Green",code:"33501",hex:"#A6D420",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/153b1266f7334a3f8cce41e99924e32a/38812377e81940668994d607c5af121f.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Green",code:"33500",hex:"#0B9B5B",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/f2b2a518b63248339b48fa4da8ed5c3e/aee675e95734414ca1e9b6f83ba6e7cf.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Forest Green",code:"33502",hex:"#21503F",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/8620e8a63e7d46d2a488d7282c2b97fb/616eb09aec544622963c5f1a9fb6424a.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Lake Blue",code:"33601",hex:"#2A7FC9",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/9d372967762642129819a39527033e1b/26cf49afc41b4a8eb01f53084a0aba3c.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Blue",code:"33600",hex:"#1E4B9E",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/945e8fad01b048b6b79c3c15859265b8/a3478612f8b24e47b12a3d86116de7a6.png",qty:0},
+ // PETG Translucent — in catalog, not yet bought
+ {fam:"PETG Translucent",grp:"PETG",color:"Gray",code:"32100",hex:"#BFC4C7",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/89c68be306594e00840d023526d07861/ad3609015eb94c1bbca999caf63e20f6.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Light Blue",code:"32600",hex:"#A8D5EE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/eb22f4c236594b24acb9ccf60d3c2caf/342df5a8028045e49ad43889ca05d3a7.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Teal",code:"32501",hex:"#6FC5BE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/4c9f8c155c174e478018cc44cf031cfb/0f982290866445e2aa2a0e87f3999f85.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Olive",code:"32500",hex:"#AEB65A",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/aedce0713b0f4abb9b0b6730e52be253/e0a9f45779d04ae28677449c1ff03d44.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Orange",code:"32300",hex:"#F8A055",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c66eeabfd6ca486db3c2a6fed2f282a8/5f5b2ce4c11b4a7bb6a577d658fb2c8b.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Pink",code:"32200",hex:"#F6B8CE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/19136aee68624543b2f4ea9d2a496d54/042c27699ca7449ba6b4adc1d0b54b00.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Purple",code:"32700",hex:"#C39BDB",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/25c823e18c964300ae363a5693b400b3/d7588868519f40ed9286d9230e2f3ae1.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Brown",code:"32800",hex:"#B98157",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/a7ecdd3737ce4e18abb986f83a081a3e/62a0a80a60d4438d9cdf6624bdef3643.media",qty:0},
+ // Amazon — third-party PETG-class
+ {fam:"Creality PETG",grp:"PETG",color:"Black",code:"",src:"Amazon",hex:"#161616",fmt:"Spool",qty:1},
+ {fam:"Flashforge PETG-CF",grp:"PETG",color:"Midnight Blue",code:"",src:"Amazon",hex:"#1B2A4A",fmt:"Spool",qty:1},
+ {fam:"Polymaker PET-CF",grp:"PETG",color:"Black",code:"",src:"Amazon",hex:"#1C1C1C",fmt:"Spool",qty:1,kg:0.5},
+ {fam:"3D-Fuel PCTG",grp:"PETG",color:"Natural",code:"",src:"Amazon",hex:"#E8E9E4",fmt:"Spool",qty:1},
+ // Engineering (4)
+ {fam:"ABS",grp:"ABS/ASA",color:"Silver",code:"40102",hex:"#9A9EA3",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/06ec2d59ef0347fa876cb303e2d7114e/522789b7d815491293c866621998b103.media",qty:1},
+ {fam:"ASA",grp:"ABS/ASA",color:"Gray",code:"45102",hex:"#8A8D8F",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/6165d25792ba48ab97860e4cb515a734/7e5829465d8a48b39c5ad1d103db0b5e.media",qty:1},
+ {fam:"TPU 90A",grp:"TPU",color:"Black",code:"51103",hex:"#1A1A1A",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4f46fb27e7734edba99282302afc7ff3/BLACK.jpg",qty:1},
+ {fam:"TPU for AMS",grp:"TPU",color:"Black",code:"53101",hex:"#1A1A1A",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/7eefb613a3b14f699108b21b4a711401/74b4aac572d94f2eb9549b373b81d2de.png",qty:1},
+ // Support (2 x 0.5kg)
+ {fam:"Support PLA/PETG",grp:"Support",color:"Nature",code:"65102",hex:"#ECE2CB",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/b7e5fd8ab0414529bbb6acd6fc6ce2b8/450b2b2431104c62ad28fb6131f20220.png",qty:1,kg:0.5},
+ {fam:"Support PLA (New)",grp:"Support",color:"White",code:"65104",hex:"#F3F1EC",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/01f07d18a78c40b98c6ef026f4810ea5/Rectangle_1274.png",qty:1,kg:0.5},
+ // H2C hotends — 8 included with the printer + 7 purchased (parts, excluded from roll/kg totals)
+ {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.4mm Hardened Steel",code:"",src:"4 included \u00b7 2 from Utility bundle",hex:"#5F646B",fmt:"Part",img:"https://store.bblcdn.com/s7/default/65c50e4a5f484221b8bb32ba9a512be0/FAH051.png",qty:6,kg:0},
+ {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.2mm Stainless Steel",code:"",src:"Aug 3 order",hex:"#9CA1A8",fmt:"Part",img:"https://store.bblcdn.com/s7/default/65c50e4a5f484221b8bb32ba9a512be0/FAH051.png",qty:3,kg:0},
+ {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.2mm Induction",code:"",src:"Included with H2C",hex:"#8A8F96",fmt:"Part",img:"https://store.bblcdn.com/s7/default/65c50e4a5f484221b8bb32ba9a512be0/FAH051.png",qty:1,kg:0},
+ {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.6mm Induction",code:"",src:"Included with H2C",hex:"#43474D",fmt:"Part",img:"https://store.bblcdn.com/s7/default/65c50e4a5f484221b8bb32ba9a512be0/FAH051.png",qty:1,kg:0},
+ {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.8mm High Flow Hardened",code:"",src:"Aug 31 order",hex:"#3A3E44",fmt:"Part",qty:1,kg:0},
+ {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.6mm High Flow Hardened",code:"",src:"Aug 31 order",hex:"#4A4F56",fmt:"Part",qty:1,kg:0},
+ {fam:"H2C Left Hotends (Standard)",grp:"Parts",color:"0.4mm Hardened Steel",code:"",src:"Included with H2C",hex:"#5F646B",fmt:"Part",img:"https://store.bblcdn.com/s7/default/e7253f40ef9140d4b4956cc15f5839b5/hotend-1.png",qty:2,kg:0},
+ {fam:"H2C Left Hotends (Standard)",grp:"Parts",color:"0.2mm Stainless Steel",code:"",src:"Utility bundle",hex:"#9CA1A8",fmt:"Part",img:"https://store.bblcdn.com/s7/default/e7253f40ef9140d4b4956cc15f5839b5/hotend-1.png",qty:1,kg:0},
+ {fam:"H2C Left Hotends (Standard)",grp:"Parts",color:"0.6mm Hardened Steel",code:"",src:"Utility bundle",hex:"#43474D",fmt:"Part",img:"https://store.bblcdn.com/s7/default/e7253f40ef9140d4b4956cc15f5839b5/hotend-1.png",qty:1,kg:0},
+];
+const B="https://us.store.bambulab.com/products/";
+const A=q=>"https://www.amazon.com/s?k="+encodeURIComponent(q);
+const LINKS={
+ "PLA Basic":[B+"pla-basic-filament","Bambu"],
+ "PLA Matte":[B+"pla-matte","Bambu"],
+ "PLA Silk+":[B+"pla-silk-upgrade","Bambu"],
+ "PLA Translucent":[B+"pla-translucent","Bambu"],
+ "PLA Marble":[B+"pla-marble","Bambu"],
+ "PLA Wood":[B+"pla-wood","Bambu"],
+ "PLA Sparkle":[B+"pla-sparkle","Bambu"],
+ "PLA Glow":[B+"pla-glow","Bambu"],
+ "PLA Tough+":[B+"pla-tough-upgrade","Bambu"],
+ "PLA Aero":[B+"pla-aero","Bambu"],
+ "PLA-CF":[B+"pla-cf","Bambu"],
+ "PETG HF":[B+"petg-hf","Bambu"],
+ "PETG Basic":[B+"petg-basic","Bambu"],
+ "PETG Translucent":[B+"petg-translucent","Bambu"],
+ "ABS":[B+"abs-filament","Bambu"],
+ "ASA":[B+"asa-filament","Bambu"],
+ "TPU 90A":[B+"tpu-85a-tpu-90a","Bambu"],
+ "TPU for AMS":[B+"tpu-for-ams","Bambu"],
+ "Support PLA/PETG":[B+"support-for-pla-petg","Bambu"],
+ "Support PLA (New)":[B+"support-for-pla-new","Bambu"],
+ "H2C Right Hotends (Induction)":[B+"h2c-induction-hotend-right","Bambu"],
+ "H2C Left Hotends (Standard)":[B+"bambu-hotend-h2-p2s","Bambu"],
+ "eSUN PLA+":[A("eSUN PLA+ Filament 1.75mm 2 Spools Bone White Fire Engine Red"),"Amazon"],
+ "Overture Matte PLA":[A("OVERTURE Matte PLA Filament 1.75mm Matte Light Brown"),"Amazon"],
+ "Polymaker Matte PLA":[A("Polymaker Panchroma Matte PLA Marble Sandstone"),"Amazon"],
+ "SUNLU Marble PLA":[A("SUNLU High Speed Marble PLA Filament 4 pack"),"Amazon"],
+ "SUNLU Wood PLA":[A("SUNLU Real Wood Fiber PLA Filament 4 pack Cherry Maple Walnut"),"Amazon"],
+ "GIANTARM Silk PLA":[A("GIANTARM Silk Gold PLA Filament 1.75mm 1kg"),"Amazon"],
+ "Creality PETG":[A("Official Creality PETG Filament 1.75mm 1KG"),"Amazon"],
+ "Flashforge PETG-CF":[A("Flashforge PETG-CF Filament Midnight Blue"),"Amazon"],
+ "Polymaker PET-CF":[A("Polymaker Fiberon PET-CF17 Black 500g"),"Amazon"],
+ "3D-Fuel PCTG":[A("3D-Fuel Tough Pro PCTG Natural 1kg"),"Amazon"],
+ "ANYCUBIC PLA":["https://www.aliexpress.com/w/wholesale-anycubic-pla-filament-1kg.html","AliExpress"],
+};
+const TYPE_OF={"PLA Basic":"Basic","PLA Matte":"Matte","PLA Silk+":"Silk","PLA Translucent":"Translucent","PLA Marble":"Marble","PLA Wood":"Wood","PLA Sparkle":"Sparkle","PLA Glow":"Glow","PLA Tough+":"Tough+","PLA Aero":"Aero","PLA-CF":"CF",
+  "eSUN PLA+":"PLA+","Overture Matte PLA":"Matte","Polymaker Matte PLA":"Matte","SUNLU Marble PLA":"Marble","SUNLU Wood PLA":"Wood","GIANTARM Silk PLA":"Silk","ANYCUBIC PLA":"Basic"};
+const BRAND_OF={"eSUN PLA+":"eSUN","Overture Matte PLA":"Overture","Polymaker Matte PLA":"Polymaker","SUNLU Marble PLA":"SUNLU","SUNLU Wood PLA":"SUNLU","GIANTARM Silk PLA":"GIANTARM","ANYCUBIC PLA":"ANYCUBIC",
+  "Creality PETG":"Creality","Flashforge PETG-CF":"Flashforge","Polymaker PET-CF":"Polymaker","3D-Fuel PCTG":"3D-Fuel"};
+const TYPE_ORDER=["Basic","Matte","Silk","Translucent","Marble","Wood","Sparkle","Glow","Tough+","Aero","CF","PLA+"];
+const COLS=["Basic","Matte","Silk","Marble","Wood"];
+const SECTIONS=["PLA","PETG HF","PETG Basic","PETG Translucent","Creality PETG","Flashforge PETG-CF","Polymaker PET-CF","3D-Fuel PCTG","ABS","ASA","TPU 90A","TPU for AMS","Support PLA/PETG","Support PLA (New)","H2C Right Hotends (Induction)","H2C Left Hotends (Standard)"];
+const SEG={PLA:"PLA",PETG:"PETG","ABS/ASA":"Other",TPU:"Other",Support:"Other",Parts:"Parts"};
+
+DATA.forEach(d=>{
+  d.id=(d.code||d.fam+"-"+d.color)+"-"+d.fmt; d.kg=(d.kg===undefined?1:d.kg); d.base=d.qty;
+  d.type=TYPE_OF[d.fam]||null; d.brand=BRAND_OF[d.fam]||"Bambu Lab"; d.sec=d.grp==="PLA"?"PLA":d.fam;
+  const n=parseInt(d.hex.slice(1),16),r=(n>>16)/255,g=((n>>8)&255)/255,b=(n&255)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;
+  let h=0,s=0; if(mx!==mn){const dd=mx-mn;s=l>.5?dd/(2-mx-mn):dd/(mx+mn);h=mx===r?((g-b)/dd+(g<b?6:0)):mx===g?((b-r)/dd+2):((r-g)/dd+4);h*=60;}
+  d.h=h;d.s=s;d.l=l;
+});
+
+const KEY="filament-inventory-counts-v1";
+function loadSaved(){try{const s=localStorage.getItem(KEY);if(!s)return;const m=JSON.parse(s);DATA.forEach(d=>{if(m[d.id]!=null)d.qty=m[d.id];});}catch(e){}}
+function save(){try{const m={};DATA.forEach(d=>m[d.id]=d.qty);localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+loadSaved();
+
+let q="",seg="All",showCat=false,sort="type",typeFilter=null;
+const $=s=>document.querySelector(s);
+const isCat=d=>d.base===0&&d.qty===0;
+
+function visible(){
+  const t=q.trim().toLowerCase();
+  return DATA.filter(d=>{
+    if(isCat(d)&&!showCat&&!t)return false;
+    if(seg!=="All"&&SEG[d.grp]!==seg)return false;
+    if(typeFilter&&d.sec==="PLA"&&(typeFilter==="Other"?COLS.includes(d.type):d.type!==typeFilter))return false;
+    return !t||(d.color+" "+d.fam+" "+d.code+" "+d.brand+" "+(d.type||"")+" "+(d.src||"")).toLowerCase().includes(t);
+  });
+}
+function cmp(a,b){
+  if(sort==="name")return a.color.localeCompare(b.color);
+  if(sort==="bought")return (b.base-a.base)||(b.qty-a.qty)||a.color.localeCompare(b.color);
+  if(sort==="tone"){
+    const na=a.s<.14,nb=b.s<.14; if(na!==nb)return na?1:-1;
+    if(na)return b.l-a.l;
+    return (a.h-b.h)||(b.l-a.l);
+  }
+  const ta=TYPE_ORDER.indexOf(a.type),tb=TYPE_ORDER.indexOf(b.type);
+  return (ta-tb)||(b.qty-a.qty)||a.color.localeCompare(b.color);
+}
+function renderTotals(){
+  const fil=DATA.filter(d=>d.grp!=="Parts");
+  const rolls=fil.reduce((a,d)=>a+d.qty,0),kg=fil.reduce((a,d)=>a+d.qty*d.kg,0);
+  $("#tRolls").textContent=rolls;$("#tKg").textContent=kg%1?kg.toFixed(1):kg;
+  $("#tColors").textContent=new Set(fil.filter(d=>d.qty>0).map(d=>d.fam+d.color)).size;
+  $("#tHotends").textContent=DATA.filter(d=>d.grp==="Parts").reduce((a,d)=>a+d.qty,0);
+}
+function subline(d){
+  if(d.grp==="Parts")return d.src||"";
+  if(isCat(d))return "Not bought yet";
+  const bits=[];
+  if(d.brand!=="Bambu Lab")bits.push(d.brand);
+  if(d.fmt==="Refill"||d.fmt==="Spool")bits.push(d.fmt);
+  if(d.kg!==1)bits.push(d.kg+" kg");
+  return bits.join(" \u00b7 ");
+}
+function typeCells(d){
+  return COLS.map(c=>`<span>${d.type===c?"\u2713":""}</span>`).join("")+`<span class="o">${COLS.includes(d.type)?"":(d.type||"")}</span>`;
+}
+
+// ---- magnets (Amazon orders + cart + AliExpress; updated Aug 31 2026) ----
+const AMZ=a=>"https://www.amazon.com/gp/product/"+a;
+// src: [label, asin_or_null, count, status]  status: Owned | In cart | Saved for later
+const MAG_DISCS=[
+ {d:3,t:1,src:[["345-pc assorted pack (120 here) · May 14, 2026","B0CHSGK362",120,"Owned"]]},
+ {d:3,t:2,src:[["AUWHEMITY 622-pc assorted (300 here) · Aug 29, 2026","B0GY4BFHKH",300,"Owned"]]},
+ {d:3,t:5,src:[["XEAOHESY 100-pack · Jul 23, 2026","B0GSZ21V81",100,"Owned"]]},
+ {d:5,t:1,src:[["345-pc assorted pack (100 here) · May 14, 2026","B0CHSGK362",100,"Owned"]]},
+ {d:5,t:2,src:[["AUWHEMITY 622-pc assorted (80 here) · Aug 29, 2026","B0GY4BFHKH",80,"Owned"]]},
+ {d:5,t:3,src:[["AUWHEMITY 622-pc assorted (80 here) · Aug 29, 2026","B0GY4BFHKH",80,"Owned"]]},
+ {d:6,t:2,src:[["DIYMAG 300-pack · Aug 19, 2026","B07KJ9H31P",300,"Owned"],["AUWHEMITY 622-pc assorted (40 here) · Aug 29, 2026","B0GY4BFHKH",40,"Owned"]]},
+ {d:6,t:3,src:[["DIYMAG 200-pack · Aug 19, 2026","B07KZQGWNN",200,"Owned"],["AUWHEMITY 622-pc assorted (40 here) · Aug 29, 2026","B0GY4BFHKH",40,"Owned"]]},
+ {d:7,t:2,src:[["345-pc assorted pack (60 here) · May 14, 2026","B0CHSGK362",60,"Owned"]]},
+ {d:8,t:2,src:[["AUWHEMITY 622-pc assorted (40 here) · Aug 29, 2026","B0GY4BFHKH",40,"Owned"]]},
+ {d:8,t:3,src:[["AUWHEMITY 622-pc assorted (20 here) · Aug 29, 2026","B0GY4BFHKH",20,"Owned"]]},
+ {d:9,t:1.5,src:[["345-pc assorted pack (40 here) · May 14, 2026","B0CHSGK362",40,"Owned"]]},
+ {d:10,t:2,src:[["AUWHEMITY 622-pc assorted (10 here) · Aug 29, 2026","B0GY4BFHKH",10,"Owned"]]},
+ {d:10,t:3,src:[["VSKIZ 50-pack · Apr 24, 2026","B0BVY5VYQY",50,"Owned"]]},
+ {d:12,t:3,src:[["345-pc assorted pack (20 here) · May 14, 2026","B0CHSGK362",20,"Owned"]]},
+ {d:15,t:2,src:[["AUWHEMITY 622-pc assorted (10 here) · Aug 29, 2026","B0GY4BFHKH",10,"Owned"]]},
+ {d:20,t:2,src:[["345-pc assorted pack (5 here) · May 14, 2026","B0CHSGK362",5,"Owned"]]},
+ {d:30,t:2,src:[["AUWHEMITY 622-pc assorted (2 here) · Aug 29, 2026","B0GY4BFHKH",2,"Owned"]]},
+];
+const MAG_OTHER=[
+ {label:"5\u00d710 cyl",title:"5\u00d710 mm cylinders",fam:"Neodymium cylinder",src:[["20-pack N35 · Jul 23, 2026","B0D3F13DDX",20,"Owned"]]},
+ {label:"60\u00d710\u00d75",title:"60\u00d710\u00d75 mm bars",fam:"Neodymium bar",src:[["8-pack N45 (2021)",null,8,"Owned"]]},
+ {label:"60\u00d713.5\u00d75",title:"60\u00d713.5\u00d75 mm bars",fam:"Countersunk bar",src:[["TRYMAG 15-pack \u00d72 (2024)",null,30,"Owned"],["TRYMAG 70lb 15-pack (2024)",null,15,"Owned"],["Pot 8-pack (2023)",null,8,"Owned"]]},
+ {label:"Cups",title:"Cup / pot magnets",fam:"Mounting magnets",src:[["MIKEDE 20\u00d75 mm 12-pack (2023)",null,12,"Owned"],["LOVIMAG 110 lb 10-pack (2023)",null,10,"Owned"]]},
+ {label:"Ceramic",title:"20\u00d75 mm ceramic, adhesive",fam:"Ferrite disc",src:[["TRYMAG 25-pack (2023)",null,25,"Owned"]]},
+ {label:"Testers",title:"Pocket test magnets",fam:"Keychain testers",src:[["TRYMAG 4-pack \u00d72 (2024)",null,8,"Owned"],["AliExpress 12\u201328 mm \u00d79 (2026)",null,9,"Owned"]]},
+];
+const MAG_ORDERS=[
+ ["Aug 29, 2026","AUWHEMITY 622-pc assorted, 10 sizes","Amazon",622],
+ ["Aug 19, 2026","DIYMAG 6×2 mm, 300-pack","Amazon",300],
+ ["Aug 19, 2026","DIYMAG 6×3 mm, 200-pack","Amazon",200],
+ ["Jul 23, 2026","XEAOHESY 3×5 mm, 100-pack","Amazon",100],
+ ["Jul 23, 2026","5×10 mm cylinders, 20-pack","Amazon",20],
+ ["May 30, 2026","Pocket testers 12/15/17/28 mm","AliExpress",4],
+ ["May 30, 2026","Pocket testers 21 & 25 mm","AliExpress",2],
+ ["May 14, 2026","345-pc assorted, 6 sizes","Amazon",345],
+ ["Apr 24, 2026","VSKIZ 10×3 mm, 50-pack","Amazon",50],
+ ["Mar 29, 2026","Pocket testers 12/17/28 mm","AliExpress",3],
+ ["Aug 18, 2024","TRYMAG 60×13.5×5 bars, 15-pack","Amazon",15],
+ ["Aug 18, 2024","TRYMAG keychain testers, 4-pack","Amazon",4],
+ ["Aug 12, 2024","TRYMAG 60×13.5×5 bars, 15-pack","Amazon",15],
+ ["Aug 12, 2024","TRYMAG keychain testers, 4-pack","Amazon",4],
+ ["Feb 15, 2024","TRYMAG 70 lb bars, 15-pack","Amazon",15],
+ ["Dec 19, 2023","MIKEDE cup magnets, 12-pack","Amazon",12],
+ ["Dec 4, 2023","Countersunk pot bars, 8-pack","Amazon",8],
+ ["Dec 4, 2023","TRYMAG ceramic adhesive discs, 25-pack","Amazon",25],
+ ["Jul 18, 2023","LOVIMAG 110 lb cups, 10-pack","Amazon",10],
+ ["Mar 24, 2021","Bar magnets 60×10×5, 8-pack","Amazon",8],
+ ["Mar 24, 2021","FINDMAG fridge 300-pack (size unlisted — not charted)","Amazon",300],
+];
+function magCounts(m){const c={Owned:0,"In cart":0,"Saved for later":0};m.src.forEach(s=>c[s[3]]+=s[2]);return c;}
+function magPopHTML(m,title,fam){
+  const c=magCounts(m);
+  const rows=[["Owned",c.Owned]]; if(c["In cart"])rows.push(["In cart",c["In cart"]]); if(c["Saved for later"])rows.push(["Saved",c["Saved for later"]]);
+  return `<div class="pop-top"><div class="pop-dot" style="background:linear-gradient(145deg,#c8ccd2,#7d838c)"></div>
+    <div><div class="pop-title">${title}</div><div class="pop-fam">${fam}</div></div></div>
+    <dl class="pop-grid">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v} pcs</dd>`).join("")}</dl>
+    ${m.src.map(([n,a,q,st])=>a?`<a href="${AMZ(a)}" target="_blank" rel="noopener">${n} \u203a</a>`:`<div style="margin-top:10px;font-size:12px;color:var(--muted);text-align:center">${n}</div>`).join("")}`;
+}
+function magBar(container,m,label,title,fam,max){
+  const c=magCounts(m);const total=c.Owned+c["In cart"]+c["Saved for later"];
+  const col=document.createElement("div");col.className="col";
+  const h=n=>n?Math.max(n===total?16:6,Math.round(150*n/max)):0;
+  col.innerHTML=`<div class="bar-n">${total}</div>
+    <div class="stack" style="display:flex;flex-direction:column-reverse;width:100%;max-width:34px">
+      ${c.Owned?`<div class="bar" style="height:${h(c.Owned)}px;border-radius:${c["In cart"]||c["Saved for later"]?"0 0 3px 3px":"7px 7px 3px 3px"}"></div>`:""}
+      ${c["In cart"]?`<div class="bar cart" style="height:${h(c["In cart"])}px;opacity:.7;border-radius:${c["Saved for later"]?"0":"7px 7px 0 0"}"></div>`:""}
+      ${c["Saved for later"]?`<div class="bar saved" style="height:${h(c["Saved for later"])}px;border-radius:7px 7px 0 0"></div>`:""}
+    </div><div class="bar-x">${label}</div>`;
+  const stack=col.querySelector(".stack");
+  stack.addEventListener("mouseenter",()=>{clearTimeout(popTimer);popTimer=setTimeout(()=>{pop.innerHTML=magPopHTML(m,title,fam);pop.style.display="block";const r=stack.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;let left=r.left+window.scrollX-pw/2+r.width/2;left=Math.max(window.scrollX+8,Math.min(left,window.scrollX+window.innerWidth-pw-8));let top=r.top+window.scrollY-ph-8;if(top<window.scrollY)top=r.bottom+window.scrollY+8;pop.style.left=left+"px";pop.style.top=top+"px";requestAnimationFrame(()=>pop.classList.add("show"));popRow=stack;},180);});
+  stack.addEventListener("mouseleave",()=>{clearTimeout(popTimer);popTimer=setTimeout(hidePop,150);});
+  stack.addEventListener("click",()=>{popRow===stack&&pop.classList.contains("show")?hidePop():stack.dispatchEvent(new Event("mouseenter"));});
+  container.appendChild(col);
+}
+function renderMagnets(){
+  const host=$("#list");host.innerHTML="";
+  const allTotal=[...MAG_DISCS,...MAG_OTHER].reduce((a,m)=>{const c=magCounts(m);return a+c.Owned+c["In cart"]+c["Saved for later"];},0);
+  const ownedTotal=[...MAG_DISCS,...MAG_OTHER].reduce((a,m)=>a+magCounts(m).Owned,0);
+  // disc chart with blank columns for missing whole-mm diameters
+  const maxDisc=Math.max(...MAG_DISCS.map(m=>{const c=magCounts(m);return c.Owned+c["In cart"]+c["Saved for later"];}));
+  const dias=[...new Set(MAG_DISCS.map(m=>m.d))].sort((a,b)=>a-b);
+  const sec=document.createElement("div");sec.className="section";
+  sec.innerHTML=`<div class="section-h"><h2>Disc magnets \u00b7 by size</h2><span>${ownedTotal} pcs purchased</span></div>
+   <div class="card"><div class="chart"></div>
+   <div class="legend"><span><i></i>Purchased</span><span>\u25ad size gap</span></div></div>`;
+  const chart=sec.querySelector(".chart");
+  for(let d=dias[0];d<=20;d++){
+    const here=MAG_DISCS.filter(m=>m.d===d).sort((a,b)=>a.t-b.t);
+    if(here.length)here.forEach(m=>magBar(chart,m,m.d+"\u00d7"+m.t,m.d+"\u00d7"+m.t+" mm","Neodymium disc",maxDisc));
+    else{const col=document.createElement("div");col.className="col blank";col.innerHTML='<div class="slot"></div><div class="bar-x">'+d+'</div>';chart.appendChild(col);}
+  }
+  const gap=document.createElement("div");gap.className="col blank";gap.innerHTML='<div class="bar-x" style="font-size:14px">\u22ef</div><div class="bar-x">21\u201329</div>';chart.appendChild(gap);
+  MAG_DISCS.filter(m=>m.d===30).forEach(m=>magBar(chart,m,"30\u00d72","30\u00d72 mm","Neodymium disc",maxDisc));
+  host.appendChild(sec);
+  // other shapes
+  const maxO=Math.max(...MAG_OTHER.map(m=>{const c=magCounts(m);return c.Owned+c["In cart"]+c["Saved for later"];}));
+  const sec2=document.createElement("div");sec2.className="section";
+  sec2.innerHTML='<div class="section-h"><h2>Other shapes</h2><span>bars, cups, cylinders, testers</span></div><div class="card"><div class="chart"></div></div>';
+  const chart2=sec2.querySelector(".chart");
+  MAG_OTHER.forEach(m=>magBar(chart2,m,m.label,m.title,m.fam,maxO));
+  host.appendChild(sec2);
+  // order history
+  const sec3=document.createElement("div");sec3.className="section";
+  sec3.innerHTML='<div class="section-h"><h2>Order history</h2><span>'+MAG_ORDERS.length+' orders</span></div><div class="card"></div>';
+  const card3=sec3.querySelector(".card");
+  MAG_ORDERS.forEach(([date,what,src,n])=>{
+    const row=document.createElement("div");row.className="row";
+    row.innerHTML='<div class="meta"><div class="name">'+what+'</div><div class="sub">'+date+' · '+src+'</div></div><div class="sub" style="flex:none;font-variant-numeric:tabular-nums">'+n+' pcs</div>';
+    card3.appendChild(row);
+  });
+  host.appendChild(sec3);
+  const note=document.createElement("div");note.className="note";
+  note.innerHTML="Purchased orders only \u2014 cart and saved-for-later items are excluded. Assorted-pack counts use the manufacturer\u2019s stated per-size split. Not charted: FINDMAG 300-pc fridge pack (2021, size unlisted) and decorative/hardware magnets (hooks, clips, sculpture toys).";
+  host.appendChild(note);
+}
+function renderList(){
+  hidePop();
+  document.querySelector(".sortrow").style.display=seg==="Magnets"?"none":"";
+  $("#q").style.display=seg==="Magnets"?"none":"";
+  $("#toggleCat").style.display=seg==="Magnets"?"none":"";
+  if(seg==="Magnets"){renderMagnets();return;}
+  const host=$("#list");host.innerHTML="";
+  const rows=visible();
+  if(!rows.length){host.innerHTML='<div class="card"><div class="empty">Nothing here</div></div>';return;}
+  SECTIONS.forEach(sname=>{
+    const items=rows.filter(d=>d.sec===sname).sort(cmp);
+    if(!items.length)return;
+    const n=items.reduce((a,d)=>a+d.qty,0);
+    const unit=items[0].grp==="Parts"?(n===1?"piece":"pieces"):(n===1?"roll":"rolls");
+    const sec=document.createElement("div");sec.className="section";
+    sec.innerHTML=`<div class="section-h"><h2>${sname}</h2><span>${n} ${unit}</span></div><div class="card"></div>`;
+    const card=sec.querySelector(".card");
+    if(sname==="PLA"){
+      const th=document.createElement("div");th.className="thead";
+      th.innerHTML=`<div class="dot" style="visibility:hidden"></div><div class="lead"></div><div class="types">${[...COLS,"Other"].map(c=>`<button data-t="${c}" class="${typeFilter===c?"on":""}">${c}</button>`).join("")}</div><div class="stepper-ghost"></div>`;
+      th.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;typeFilter=typeFilter===b.dataset.t?null:b.dataset.t;renderList();});
+      card.appendChild(th);
+    }
+    items.forEach(d=>{
+      const row=document.createElement("div");row.className="row"+(isCat(d)?" cat":(d.qty===0?" out":""));
+      row.innerHTML=`<div class="dot" style="background:${d.hex}"></div>
+        <div class="meta"><div class="name">${d.color}</div><div class="sub">${subline(d)}</div></div>
+        ${sname==="PLA"?`<div class="types">${typeCells(d)}</div>`:""}
+        <div class="stepper"><button aria-label="decrease">&minus;</button><div class="v ${d.qty===0?"zero":""}">${d.qty}</div><button aria-label="increase">+</button></div>`;
+      const btns=row.querySelectorAll(".stepper button");
+      btns[0].onclick=()=>{if(d.qty>0){d.qty--;save();renderAll();}};
+      btns[1].onclick=()=>{d.qty++;save();renderAll();};
+      attachPop(row,d);card.appendChild(row);
+    });
+    host.appendChild(sec);
+  });
+}
+
+// hover / tap preview
+const pop=document.getElementById("pop");let popTimer=null,popRow=null;
+function popHTML(d){
+  const L=LINKS[d.fam];
+  const visual=d.img?`<img class="pop-img" src="${d.img}" alt="">`:`<div class="pop-dot" style="background:${d.hex}"></div>`;
+  const rows=[];
+  if(d.type)rows.push(["Type",d.type]);
+  if(d.code)rows.push(["SKU",d.code]);
+  if(d.grp!=="Parts"){
+    if(d.fmt==="Refill"||d.fmt==="Spool")rows.push(["Format",d.fmt]);
+    rows.push(["Roll",d.kg+" kg"]);rows.push(["Brand",d.brand]);
+    rows.push(["Source",d.src||"Bambu Lab store"]);rows.push(["Purchased",isCat(d)?"\u2014":d.base]);
+  }else rows.push(["Source",d.src||""]);
+  rows.push(["On hand",d.qty]);
+  return `<div class="pop-top">${visual}<div><div class="pop-title">${d.color}</div><div class="pop-fam">${d.fam}</div></div></div>
+    <dl class="pop-grid">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>${L?`<a href="${L[0]}" target="_blank" rel="noopener">View on ${L[1]} \u203a</a>`:""}`;
+}
+function showPop(row,d){
+  pop.innerHTML=popHTML(d);pop.style.display="block";
+  const r=row.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;
+  let left=r.left+window.scrollX+56;if(left+pw>window.scrollX+window.innerWidth-12)left=window.scrollX+window.innerWidth-pw-12;
+  let top=r.bottom+window.scrollY+6;if(r.bottom+ph+12>window.innerHeight)top=r.top+window.scrollY-ph-6;
+  pop.style.left=left+"px";pop.style.top=top+"px";requestAnimationFrame(()=>pop.classList.add("show"));popRow=row;
+}
+function hidePop(){clearTimeout(popTimer);pop.classList.remove("show");pop.style.display="none";popRow=null;}
+pop.addEventListener("mouseenter",()=>clearTimeout(popTimer));
+pop.addEventListener("mouseleave",()=>{popTimer=setTimeout(hidePop,150);});
+document.addEventListener("click",e=>{if(!pop.contains(e.target)&&!(popRow&&popRow.contains(e.target)))hidePop();});
+window.addEventListener("scroll",()=>{if(popRow)hidePop();},{passive:true});
+function attachPop(row,d){
+  row.addEventListener("mouseenter",()=>{clearTimeout(popTimer);popTimer=setTimeout(()=>showPop(row,d),220);});
+  row.addEventListener("mouseleave",()=>{clearTimeout(popTimer);popTimer=setTimeout(hidePop,150);});
+  row.querySelector(".meta").addEventListener("click",()=>{popRow===row?hidePop():showPop(row,d);});
+}
+function renderAll(){renderTotals();renderList();}
+
+$("#q").addEventListener("input",e=>{q=e.target.value;renderList();});
+$("#sort").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;sort=b.dataset.s;document.querySelectorAll("#sort button").forEach(x=>x.classList.toggle("on",x===b));renderList();});
+$("#segment").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;seg=b.dataset.g;document.querySelectorAll("#segment button").forEach(x=>x.classList.toggle("on",x===b));renderList();});
+$("#toggleCat").addEventListener("click",e=>{showCat=!showCat;e.target.textContent=showCat?"Hide catalog colors":"Show catalog colors";renderList();});
+$("#reset").addEventListener("click",()=>{if(!confirm("Reset all counts to as-purchased quantities?"))return;DATA.forEach(d=>d.qty=d.base);save();renderAll();});
+$("#csv").addEventListener("click",()=>{
+  const lines=["Section,Material,Type,Brand,Color,Code,Format,Roll kg,Purchased,On hand"];
+  DATA.forEach(d=>lines.push(`${d.sec},"${d.fam}",${d.type||""},${d.brand},"${d.color}",${d.code},${d.fmt},${d.kg},${d.base},${d.qty}`));
+  const blob=new Blob([lines.join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="filament-inventory.csv";a.click();URL.revokeObjectURL(a.href);
+});
+renderAll();
+</script>
+</body>
+</html>

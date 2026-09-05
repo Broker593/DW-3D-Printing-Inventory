@@ -47,21 +47,31 @@
   .slegend .k em{font-style:normal;color:var(--muted);font-size:11px}
   .slegend .v{font-weight:600;font-variant-numeric:tabular-nums}
   .slegend .pc{color:var(--muted);font-size:11px;width:34px;text-align:right}
+  .shelf,.cpk{border-top:1px solid var(--rule);padding-top:12px;margin-bottom:16px}
+  .cpk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .cpk-grid div{border-left:3px solid var(--ink);padding-left:10px}
+  .cpk-grid div:first-child{border-color:var(--red)}
+  .cpk-grid b{display:block;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(26px,4.6vw,38px);line-height:1}
+  .cpk-grid span{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:5px}
+  .cpk-grid small{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}
+  .cpk-bar{height:6px;background:var(--fill);margin-top:8px;position:relative}
+  .cpk-bar i{position:absolute;left:0;top:0;height:100%;background:var(--ink)}
+  .cpk-grid div:first-child .cpk-bar i{background:var(--red)}
   .src{font-size:11px;color:var(--muted);font-style:italic;margin-top:10px;line-height:1.5}
   @media (max-width:560px){.figs{grid-template-columns:1fr 1fr;gap:10px 0}.figs div:nth-child(2){border-right:none}.slegend{grid-template-columns:1fr}}
   /* feature grid */
   .feat-h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--rule);padding-bottom:4px;margin-bottom:10px}
   .feat-h span:first-child{font-family:Anton,Impact,sans-serif;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
   .feat-h span:last-child{font-size:11px;color:var(--muted)}
-  .feat{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:26px}
+  .feat{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:26px}
   .feat a{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--hair)}
-  .feat .ph{aspect-ratio:1;background:var(--fill);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .feat .ph{aspect-ratio:1;background:var(--fill);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
   .feat .ph img{width:100%;height:100%;object-fit:cover}
   .feat .ph i{display:block;width:60%;aspect-ratio:1;border-radius:50%}
   .feat .cap{padding:6px 7px 8px}
   .feat .cap b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:12px;line-height:1.15;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .feat .cap span{font-size:10px;color:var(--red);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-  @media (max-width:560px){.feat{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:560px){.feat{grid-template-columns:repeat(5,1fr);gap:5px}.feat .cap{padding:5px 5px 6px}.feat .cap b{font-size:10.5px}.feat .cap span{font-size:8.5px}}
 
   /* controls */
   .search{width:100%;display:block;margin-bottom:10px;height:38px;background:var(--card);border:1px solid var(--rule);border-radius:0;padding:0 12px;font:inherit;font-size:15px;color:var(--ink);outline:none;-webkit-appearance:none;min-width:0}
@@ -149,14 +159,23 @@
     <div><b id="tColors">0</b><span>Colors</span><small id="fColors"></small></div>
     <div><b id="tHotends">0</b><span>Hotends</span><small id="fHotends"></small></div>
   </div>
+  <div class="shelf">
+    <div class="spend-hd"><div class="lbl">The shelf, by color<small>Rolls on hand, grouped the way the Hue sort groups them</small></div></div>
+    <div class="sbar" id="shelfbar"></div>
+    <div class="slegend" id="shelflegend"></div>
+  </div>
+  <div class="cpk">
+    <div class="spend-hd"><div class="lbl">Cost per kilogram<small>Filament only, before tax, by where it was bought</small></div></div>
+    <div class="cpk-grid" id="cpk"></div>
+  </div>
   <div class="spend">
     <div class="spend-hd"><div class="lbl">Spent, by category<small id="spendSub"></small></div><b id="tSpent">$0</b></div>
     <div class="sbar" id="sbar"></div>
     <div class="slegend" id="slegend"></div>
-    <div class="src">Sources: Bambu Lab order records (three accounts), Amazon and Ali order histories. Bambu filament figures include Pennsylvania sales tax; Amazon and Ali are item prices before tax. Awaiting item split, not yet counted: three Bambu orders that mixed printers with an AMS 2 Pro, hotends, a cutting kit, and 21 rolls; the printing-account order; pre-2026 magnets.</div>
+    <div class="src">Sources: Bambu Lab order records (both accounts), Amazon and Ali order histories. Awaiting item split, not yet counted: three Bambu orders that mixed printers with an AMS 2 Pro, hotends, a cutting kit, and 21 rolls; the printing-account order; pre-2026 magnets.</div>
   </div>
 </div>
-<div class="feat-h"><span>Most stocked</span><span>Top colors by rolls on hand</span></div>
+<div class="feat-h"><span>Most stocked</span><span>Top ten colors by rolls on hand</span></div>
 <div class="feat" id="feat"></div>
 <input class="search" id="q" type="search" placeholder="Search" autocomplete="off">
 <div class="sortrow"><span>Sort</span>
@@ -664,31 +683,48 @@ function attachPop(row,d){
 // ---- spend by category (USD) -------------------------------------------
 // [label, amount, color, note, pending?]
 const SPEND=[
- ["Filament",1572.60,"#c8102e","Bambu $1,179 \u00b7 Amazon $343 \u00b7 Ali $50"],
+ ["Filament",1492.43,"#c8102e","Bambu $1,102 \u00b7 Amazon $343 \u00b7 Ali $47"],
  ["Hotends",139.98,"#111",""],
  ["AMS units",139.00,"#555","3 on hand \u2014 AMS HT priced; AMS 2 Pro and combo AMS pending"],
  ["Magnets",99.93,"#8a8a8a",""],
  ["Build plates",32.85,"#bdbdbd","CryoGrip Pro for H2C"],
+ ["Sales tax",142.17,"#e0dcd3","on everything above"],
 ];
 const SPEND_TOTAL=SPEND.reduce((a,s)=>a+s[1],0);
 const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
 const fmt$2=n=>"$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const FAMILY_COLOR={Red:"#c8102e",Orange:"#f07a1a",Yellow:"#f2c744",Green:"#3f8e43",Teal:"#2aa7a0",Blue:"#1f4ea3",Purple:"#6a4bb5",Pink:"#e89ac0",Brown:"#7a5236",White:"#f3efe6",Gray:"#9a9a9a",Black:"#1a1a1a"};
+function renderShelf(){
+  const owned=DATA.filter(d=>d.grp!=="Parts"&&d.qty>0);
+  const counts={};owned.forEach(d=>counts[d.family]=(counts[d.family]||0)+d.qty);
+  const rows=FAMILIES.filter(f=>counts[f]).map(f=>[f,counts[f]]);
+  const total=rows.reduce((a,r)=>a+r[1],0);
+  $("#shelfbar").innerHTML=rows.map(([f,n])=>`<i style="flex:${n};background:${FAMILY_COLOR[f]}" title="${f}: ${n}"></i>`).join("");
+  $("#shelflegend").innerHTML=rows.map(([f,n])=>`<div><i style="background:${FAMILY_COLOR[f]}"></i><span class="k">${f}</span><span class="v">${n}</span><span class="pc">${Math.round(100*n/total)}%</span></div>`).join("");
+}
+// filament cost per kg — priced rolls only (pending Bambu orders excluded)
+const CPK=[["Bambu",1102.42,66,"67 rolls priced \u00b7 24 in pending orders, 14 on the other account not priced"],["Amazon",343.19,18.5,"19 rolls"],["Ali",46.82,4,"4 rolls"]];
+function renderCPK(){
+  const max=Math.max(...CPK.map(c=>c[1]/c[2]));
+  $("#cpk").innerHTML=CPK.map(([k,usd,kg,n])=>{const v=usd/kg;return `<div><b>$${v.toFixed(2)}</b><span>${k} \u00b7 per kg</span><small>${n}</small><div class="cpk-bar"><i style="width:${Math.round(100*v/max)}%"></i></div></div>`;}).join("");
+}
 function renderSpend(){
+  renderShelf();renderCPK();
   const hot=DATA.filter(d=>d.grp==="Parts").reduce((a,d)=>a+d.qty,0);
   SPEND[1][3]=`${hot} total on hand`;
   const discs=MAG_DISCS.reduce((a,m)=>a+magCounts(m).Owned,0), other=MAG_OTHER.reduce((a,m)=>a+magCounts(m).Owned,0);
   const dias=MAG_DISCS.map(m=>m.d); SPEND[3][3]=`${Math.min(...dias)}\u2013${Math.max(...dias)} mm discs \u00b7 ${(discs+other).toLocaleString("en-US")} pcs`;
   $("#tSpent").textContent=fmt$(SPEND_TOTAL);
-  $("#spendSub").textContent="Supplies only \u2014 printers, LEDs and small accessories excluded";
+  $("#spendSub").textContent="Supplies only, before tax \u2014 printers and small accessories excluded";
   $("#sbar").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<i class="${pend?"pend":""}" style="flex:${v};${pend?"":"background:"+c}" title="${k}: ${fmt$2(v)}"></i>`).join("");
   $("#slegend").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<div><i class="${pend?"pend":""}" style="${pend?"":"background:"+c}"></i><span class="k">${k}${n?` <em>\u00b7 ${n}</em>`:""}</span><span class="v">${fmt$2(v)}</span><span class="pc">${Math.round(100*v/SPEND_TOTAL)}%</span></div>`).join("");
 }
 function renderCover(){
   const fil=DATA.filter(d=>d.grp!=="Parts"&&d.qty>0);
   const byColor={};fil.forEach(d=>{const k=d.fam+"|"+d.color;(byColor[k]=byColor[k]||{fam:d.fam,color:d.color,hex:d.hex,img:d.img,type:d.type,brand:d.brand,qty:0}).qty+=d.qty;});
-  const top=Object.values(byColor).sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color)).slice(0,6);
-  const f=$("#feat");f.innerHTML=top.map(c=>{const L=LINKS[c.fam];const vis=c.img?`<img src="${c.img}" alt="" onerror="this.outerHTML='<i style=&quot;background:${c.hex}&quot;></i>'">`:`<i style="background:${c.hex}"></i>`;
-    return `<a href="${L?L[0]:"#"}" ${L?'target="_blank" rel="noopener"':""}><div class="ph">${vis}</div><div class="cap"><b>${c.color}</b><span>${c.qty} rolls · ${c.type||c.fam}</span></div></a>`;}).join("");
+  const top=Object.values(byColor).sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color)).slice(0,10);
+  const f=$("#feat");f.innerHTML=top.map(c=>{const L=LINKS[c.fam];
+    return `<a href="${L?L[0]:"#"}" ${L?'target="_blank" rel="noopener"':""}><div class="ph" style="background:${c.hex}"></div><div class="cap"><b>${c.color}</b><span>${c.qty} rolls \u00b7 ${c.type||c.fam}</span></div></a>`;}).join("");
   const brands=new Set(fil.map(d=>d.brand)).size, fams=new Set(fil.map(d=>d.fam)).size;
   const bambu=fil.filter(d=>d.brand==="Bambu Lab").reduce((a,d)=>a+d.qty,0), all=fil.reduce((a,d)=>a+d.qty,0);
 }

@@ -74,16 +74,14 @@
   .feat-h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--rule);padding-bottom:4px;margin-bottom:10px}
   .feat-h span:first-child{font-family:Anton,Impact,sans-serif;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
   .feat-h span:last-child{font-size:11px;color:var(--muted)}
-  .feat{display:flex;gap:4px;margin-bottom:26px}
-  .feat a{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--hair);min-width:0;flex:1 1 0}
-  .feat .ph{height:64px;background:var(--fill);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
-  .feat .ph img{width:100%;height:100%;object-fit:cover}
-  .feat .ph i{display:block;width:60%;aspect-ratio:1;border-radius:50%}
-  .feat .cap{padding:4px 5px 5px}
-  .feat .cap b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:10.5px;line-height:1.15;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .feat .cap span{font-size:8.5px;color:var(--red);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-  @media (max-width:560px){.feat{gap:3px}.feat .ph{height:48px}.feat .cap{padding:3px 3px 4px}.feat .cap b{font-size:9px}.feat .cap span{font-size:7.5px}}
-
+  .feat{display:flex;align-items:flex-end;gap:10px;margin-bottom:26px;padding:8px 4px 0;min-height:200px}
+  .feat a{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:inherit;flex:1 1 0;min-width:0}
+  .feat .n{font-family:Anton,Impact,sans-serif;font-size:14px;margin-bottom:4px}
+  .feat .ph{width:100%;max-width:56px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);border-bottom:2px solid var(--rule)}
+  .feat .cap{text-align:center;padding-top:6px;width:100%}
+  .feat .cap b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:11px;line-height:1.15;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .feat .cap span{display:block;font-size:8.5px;color:var(--red);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  @media (max-width:560px){.feat{gap:5px;min-height:160px}.feat .n{font-size:12px}.feat .cap b{font-size:9px}.feat .cap span{font-size:7.5px}}
   /* controls */
   .search{width:100%;display:block;margin-bottom:10px;height:38px;background:var(--card);border:1px solid var(--rule);border-radius:0;padding:0 12px;font:inherit;font-size:15px;color:var(--ink);outline:none;-webkit-appearance:none;min-width:0}
   .search::placeholder{color:var(--muted)}
@@ -187,7 +185,7 @@
     <div class="slegend" id="shelflegend"></div>
   </div>
 </div>
-<div class="feat-h"><span>Most stocked</span><span>Top ten colors by rolls on hand</span></div>
+<div class="feat-h"><span>Most stocked</span><span>Every color with three or more rolls \u00b7 same color grouped across brands</span></div>
 <div class="feat" id="feat"></div>
 <input class="search" id="q" type="search" placeholder="Search" autocomplete="off">
 <div class="sortrow"><span>Sort</span>
@@ -752,14 +750,30 @@ function renderSpend(){
   $("#sbar").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<i class="${pend?"pend":""}" style="flex:${v};${pend?"":"background:"+c}" title="${k}: ${fmt$2(v)}"></i>`).join("");
   $("#slegend").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<div><i class="${pend?"pend":""}" style="${pend?"":"background:"+c}"></i><span class="k">${k}${n?` <em>\u00b7 ${n}</em>`:""}</span><span class="v">${fmt$2(v)}</span><span class="pc">${Math.round(100*v/SPEND_TOTAL)}%</span></div>`).join("");
 }
+function normColor(d){
+  let c=d.color.toLowerCase().replace(/\bgrey\b/g,"gray").replace(/^matte\s+/,"").replace(/\s+sparkle$/,"").replace(/\s+marble$/,"").trim();
+  return (d.grp==="PLA"?(d.type||d.fam):d.fam)+"|"+c;
+}
 function renderCover(){
   const fil=DATA.filter(d=>d.grp!=="Parts"&&d.qty>0);
-  const byColor={};fil.forEach(d=>{const k=d.fam+"|"+d.color;(byColor[k]=byColor[k]||{fam:d.fam,color:d.color,hex:d.hex,img:d.img,type:d.type,brand:d.brand,qty:0}).qty+=d.qty;});
-  const top=Object.values(byColor).sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color)).slice(0,10);
-  const f=$("#feat");f.innerHTML=top.map(c=>{const L=LINKS[c.fam];
-    return `<a href="${L?L[0]:"#"}" ${L?'target="_blank" rel="noopener"':""} style="flex:${c.qty} 1 0" title="${c.color} \u00b7 ${c.qty} rolls"><div class="ph" style="background:${c.hex}"></div><div class="cap"><b>${c.color}</b><span>${c.qty} roll${c.qty===1?"":"s"}</span></div></a>`;}).join("");
-  const brands=new Set(fil.map(d=>d.brand)).size, fams=new Set(fil.map(d=>d.fam)).size;
-  const bambu=fil.filter(d=>d.brand==="Bambu Lab").reduce((a,d)=>a+d.qty,0), all=fil.reduce((a,d)=>a+d.qty,0);
+  const g={};
+  fil.forEach(d=>{const k=normColor(d);const e=(g[k]=g[k]||{key:k,color:d.color,hex:d.hex,type:d.type||d.fam,fam:d.fam,qty:0,parts:{}});
+    e.qty+=d.qty;const b=d.brand==="Bambu Lab"?"Bambu":d.brand;e.parts[b]=(e.parts[b]||0)+d.qty;
+    if(d.brand==="Bambu Lab"){e.hex=d.hex;e.color=d.color;e.fam=d.fam;}});
+  const top=Object.values(g).filter(e=>e.qty>2).sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color));
+  const max=Math.max(...top.map(e=>e.qty),1);
+  const f=$("#feat");f.innerHTML="";
+  top.forEach(e=>{
+    const L=LINKS[e.fam];const brands=Object.keys(e.parts);
+    const a=document.createElement("a");if(L){a.href=L[0];a.target="_blank";a.rel="noopener";}
+    a.innerHTML=`<div class="n">${e.qty}</div><div class="ph" style="background:${e.hex};height:${Math.round(150*e.qty/max)}px"></div><div class="cap"><b>${e.color}</b><span>${e.type}${brands.length>1?" \u00b7 "+brands.length+" brands":""}</span></div>`;
+    const show=()=>{pop.innerHTML=`<div class="pop-top"><div class="pop-dot" style="background:${e.hex}"></div><div><div class="pop-title">${e.color}</div><div class="pop-fam">${e.type} \u00b7 ${e.qty} rolls</div></div></div>
+      <div class="fam-list">${brands.sort((x,y)=>e.parts[y]-e.parts[x]).map(b=>`<div><span>${b}</span><b>${e.parts[b]}</b></div>`).join("")}</div>`;
+      pop.style.display="block";const r=a.getBoundingClientRect(),pw=pop.offsetWidth;let left=r.left+window.scrollX+r.width/2-pw/2;left=Math.max(window.scrollX+8,Math.min(left,window.scrollX+window.innerWidth-pw-8));pop.style.left=left+"px";pop.style.top=(r.bottom+window.scrollY+6)+"px";requestAnimationFrame(()=>pop.classList.add("show"));popRow=a;};
+    a.addEventListener("mouseenter",()=>{clearTimeout(popTimer);popTimer=setTimeout(show,160);});
+    a.addEventListener("mouseleave",()=>{clearTimeout(popTimer);popTimer=setTimeout(hidePop,150);});
+    f.appendChild(a);
+  });
 }
 function renderAll(){renderTotals();renderCover();renderList();}
 

@@ -403,8 +403,8 @@ function renderTotals(){
 function subline(d){
   if(d.grp==="Parts")return d.src||"";
   if(isCat(d))return "Not bought yet";
-  const bits=[];
-  if(d.brand!=="Bambu Lab")bits.push(d.brand);
+  if(d.brand!=="Bambu Lab")return d.brand;
+  const bits=["Bambu"];
   if(d.fmt==="Refill"||d.fmt==="Spool")bits.push(d.fmt);
   if(d.kg!==1)bits.push(d.kg+" kg");
   return bits.join(" \u00b7 ");

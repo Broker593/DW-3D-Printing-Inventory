@@ -74,15 +74,15 @@
   .feat-h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--rule);padding-bottom:4px;margin-bottom:10px}
   .feat-h span:first-child{font-family:Anton,Impact,sans-serif;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
   .feat-h span:last-child{font-size:11px;color:var(--muted)}
-  .feat{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-bottom:26px}
-  .feat a{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--hair)}
-  .feat .ph{aspect-ratio:1;background:var(--fill);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  .feat{display:flex;gap:4px;margin-bottom:26px}
+  .feat a{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--hair);min-width:0;flex:1 1 0}
+  .feat .ph{height:64px;background:var(--fill);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
   .feat .ph img{width:100%;height:100%;object-fit:cover}
   .feat .ph i{display:block;width:60%;aspect-ratio:1;border-radius:50%}
   .feat .cap{padding:4px 5px 5px}
   .feat .cap b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:10.5px;line-height:1.15;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .feat .cap span{font-size:8.5px;color:var(--red);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-  @media (max-width:560px){.feat{grid-template-columns:repeat(5,1fr);gap:4px}.feat .cap{padding:3px 4px 4px}.feat .cap b{font-size:9.5px}.feat .cap span{font-size:7.5px}}
+  @media (max-width:560px){.feat{gap:3px}.feat .ph{height:48px}.feat .cap{padding:3px 3px 4px}.feat .cap b{font-size:9px}.feat .cap span{font-size:7.5px}}
 
   /* controls */
   .search{width:100%;display:block;margin-bottom:10px;height:38px;background:var(--card);border:1px solid var(--rule);border-radius:0;padding:0 12px;font:inherit;font-size:15px;color:var(--ink);outline:none;-webkit-appearance:none;min-width:0}
@@ -757,7 +757,7 @@ function renderCover(){
   const byColor={};fil.forEach(d=>{const k=d.fam+"|"+d.color;(byColor[k]=byColor[k]||{fam:d.fam,color:d.color,hex:d.hex,img:d.img,type:d.type,brand:d.brand,qty:0}).qty+=d.qty;});
   const top=Object.values(byColor).sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color)).slice(0,10);
   const f=$("#feat");f.innerHTML=top.map(c=>{const L=LINKS[c.fam];
-    return `<a href="${L?L[0]:"#"}" ${L?'target="_blank" rel="noopener"':""}><div class="ph" style="background:${c.hex}"></div><div class="cap"><b>${c.color}</b><span>${c.qty} roll${c.qty===1?"":"s"}</span></div></a>`;}).join("");
+    return `<a href="${L?L[0]:"#"}" ${L?'target="_blank" rel="noopener"':""} style="flex:${c.qty} 1 0" title="${c.color} \u00b7 ${c.qty} rolls"><div class="ph" style="background:${c.hex}"></div><div class="cap"><b>${c.color}</b><span>${c.qty} roll${c.qty===1?"":"s"}</span></div></a>`;}).join("");
   const brands=new Set(fil.map(d=>d.brand)).size, fams=new Set(fil.map(d=>d.fam)).size;
   const bambu=fil.filter(d=>d.brand==="Bambu Lab").reduce((a,d)=>a+d.qty,0), all=fil.reduce((a,d)=>a+d.qty,0);
 }

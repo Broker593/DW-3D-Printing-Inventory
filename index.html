@@ -22,16 +22,33 @@
   h1 span{color:var(--red)}
   .dek{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-size:15px;color:var(--muted);margin-top:8px}
 
-  /* cover story */
-  .cover{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;margin:16px 0 22px;border-bottom:1px solid var(--rule);padding-bottom:20px}
-  .cover-hd .kicker{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px}
-  .cover-hd h2{font-family:"Playfair Display",Georgia,serif;font-weight:800;font-size:clamp(24px,5vw,38px);line-height:1.05;letter-spacing:-.01em}
-  .cover-hd p{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.5}
-  .numbers{border-left:1px solid var(--rule);padding-left:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 10px;align-content:start}
-  .numbers div b{display:block;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:38px;line-height:1;color:var(--ink)}
-  .numbers div span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-  @media (max-width:560px){.cover{grid-template-columns:1fr}.numbers{border-left:none;border-top:1px solid var(--hair);padding:14px 0 0;grid-template-columns:repeat(3,1fr)}.numbers div b{font-size:26px}}
-
+  /* by the numbers — infographic */
+  .info{margin:16px 0 24px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 0 16px}
+  .info .kick{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:10px}
+  .figs{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:18px}
+  .figs div{padding:2px 14px 4px 0;border-right:1px solid var(--hair);margin-right:14px}
+  .figs div:last-child{border-right:none;margin-right:0}
+  .figs b{display:block;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(30px,5.2vw,44px);line-height:1;letter-spacing:.01em}
+  .figs span{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);font-weight:700;margin-top:6px}
+  .figs small{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}
+  .spend{border-top:1px solid var(--rule);padding-top:12px}
+  .spend-hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .spend-hd .lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  .spend-hd .lbl small{display:block;font-size:11px;color:var(--muted);letter-spacing:0;text-transform:none;font-weight:400;margin-top:2px}
+  .spend-hd b{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(34px,6vw,50px);line-height:1;letter-spacing:.01em}
+  .sbar{display:flex;height:22px;width:100%;overflow:hidden;border:1px solid var(--rule);margin:6px 0 10px}
+  .sbar i{display:block;height:100%}
+  .sbar i.pend{background-image:repeating-linear-gradient(135deg,var(--hair) 0 4px,transparent 4px 9px);background-color:var(--fill)}
+  .slegend{display:grid;grid-template-columns:1fr 1fr;gap:4px 28px;font-size:12.5px}
+  .slegend div{display:flex;align-items:baseline;gap:8px;padding:3px 0;border-bottom:1px dotted var(--hair)}
+  .slegend i{width:10px;height:10px;flex:none;border:1px solid var(--rule)}
+  .slegend i.pend{background-image:repeating-linear-gradient(135deg,var(--hair) 0 3px,transparent 3px 6px);background-color:var(--fill)}
+  .slegend .k{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .slegend .k em{font-style:normal;color:var(--muted);font-size:11px}
+  .slegend .v{font-weight:600;font-variant-numeric:tabular-nums}
+  .slegend .pc{color:var(--muted);font-size:11px;width:34px;text-align:right}
+  .src{font-size:11px;color:var(--muted);font-style:italic;margin-top:10px;line-height:1.5}
+  @media (max-width:560px){.figs{grid-template-columns:1fr 1fr;gap:10px 0}.figs div:nth-child(2){border-right:none}.slegend{grid-template-columns:1fr}}
   /* feature grid */
   .feat-h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--rule);padding-bottom:4px;margin-bottom:10px}
   .feat-h span:first-child{font-family:Anton,Impact,sans-serif;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
@@ -124,18 +141,19 @@
   <h1>DW&rsquo;s 3D Print <span>Supply</span> Inventory</h1>
   <div class="dek">Every roll, hotend, and magnet on the shelf &mdash; catalogued from Bambu, Amazon, and AliExpress orders.</div>
 </div>
-<div class="cover">
-  <div class="cover-hd">
-    <div class="kicker">Cover story</div>
-    <h2 id="coverHead">The Shelf, by the Numbers</h2>
-    <p id="coverDek"></p>
+<div class="info">
+  <div class="kick">By the numbers</div>
+  <div class="figs">
+    <div><b id="tRolls">0</b><span>Rolls</span><small id="fRolls"></small></div>
+    <div><b id="tKg">0</b><span>Kilograms</span><small id="fKg"></small></div>
+    <div><b id="tColors">0</b><span>Colors</span><small id="fColors"></small></div>
+    <div><b id="tHotends">0</b><span>Hotends</span><small id="fHotends"></small></div>
   </div>
-  <div class="numbers">
-    <div><b id="tRolls">0</b><span>Rolls</span></div>
-    <div><b id="tKg">0</b><span>Kilograms</span></div>
-    <div><b id="tColors">0</b><span>Colors</span></div>
-    <div><b id="tHotends">0</b><span>Hotends</span></div>
-    <div id="spentTile" style="cursor:default"><b id="tSpent">$0</b><span>Spent</span></div>
+  <div class="spend">
+    <div class="spend-hd"><div class="lbl">Spent, by category<small id="spendSub"></small></div><b id="tSpent">$0</b></div>
+    <div class="sbar" id="sbar"></div>
+    <div class="slegend" id="slegend"></div>
+    <div class="src">Sources: Bambu Lab order records (three accounts), Amazon and AliExpress order histories. Bambu amounts include Pennsylvania sales tax; Amazon and AliExpress are item prices before tax. Not included: the ~June 1 printing-account order (total unknown), pre-2026 magnets, AliExpress pocket magnets.</div>
   </div>
 </div>
 <div class="feat-h"><span>Most stocked</span><span>Top colors by rolls on hand</span></div>
@@ -425,7 +443,15 @@ function renderTotals(){
   $("#tRolls").textContent=rolls;$("#tKg").textContent=kg%1?kg.toFixed(1):kg;
   $("#tColors").textContent=new Set(fil.filter(d=>d.qty>0).map(d=>d.fam+d.color)).size;
   $("#tHotends").textContent=DATA.filter(d=>d.grp==="Parts").reduce((a,d)=>a+d.qty,0);
-  $("#tSpent").textContent=fmt$(SPEND_TOTAL);
+  const owned=fil.filter(d=>d.qty>0);
+  const refills=owned.filter(d=>d.fmt==="Refill").reduce((a,d)=>a+d.qty,0);
+  const brands=new Set(owned.map(d=>d.brand)).size, fams=new Set(owned.map(d=>d.fam)).size;
+  const pla=owned.filter(d=>d.grp==="PLA").reduce((a,d)=>a+d.qty,0);
+  $("#fRolls").textContent=`${refills} refills, ${rolls-refills} spools`;
+  $("#fKg").textContent=`${Math.round(100*pla/rolls)}% PLA by roll`;
+  $("#fColors").textContent=`${fams} lines, ${brands} brands`;
+  $("#fHotends").textContent="8 shipped with H2C, 9 bought";
+  renderSpend();
 }
 function subline(d){
   if(d.grp==="Parts")return d.src||"";
@@ -635,20 +661,25 @@ function attachPop(row,d){
 }
 
 
-// ---- spend (order records, USD) ------------------------------------------
+// ---- spend by category (USD) -------------------------------------------
+// [label, amount, color, note, pending?]
 const SPEND=[
- ["Bambu Lab store \u2014 8 orders, Apr\u2013Aug 2026 (printers, AMS, hotends & filament)",5195.20],
- ["Bambu Lab \u2014 Aug 31 order, third account",470.66],
- ["Amazon filament \u2014 12 rolls, item prices",343.19],
- ["Amazon magnets \u2014 2026 orders, item prices",99.93],
- ["AliExpress \u2014 ANYCUBIC PLA order",49.92],
+ ["Printers, AMS & parts \u2014 3 mixed Bambu orders",4154.71,"",  "Apr 12, Jul 30, Aug 3 \u2014 item split pending",true],
+ ["Filament",1572.60,"#c8102e","Bambu $1,179 \u00b7 Amazon $343 \u00b7 AliExpress $50"],
+ ["Hotends",139.98,"#111","Aug 31, 2 \u00d7 H2C High Flow"],
+ ["AMS HT",139.00,"#555","Aug 31"],
+ ["Magnets",99.93,"#8a8a8a","Amazon, 2026 orders"],
+ ["Sales tax \u2014 Aug 31 order",34.89,"#bdbdbd",""],
+ ["LED strips & accessories",17.79,"#e0dcd3","Aug 31"],
 ];
 const SPEND_TOTAL=SPEND.reduce((a,s)=>a+s[1],0);
 const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
-function spendPopHTML(){
-  return `<div class="pop-top"><div><div class="pop-title">${"$"+SPEND_TOTAL.toLocaleString("en-US",{minimumFractionDigits:2})}</div><div class="pop-fam">Verified order records</div></div></div>
-    <dl class="pop-grid">${SPEND.map(([k,v])=>`<dt>${k}</dt><dd>$${v.toLocaleString("en-US",{minimumFractionDigits:2})}</dd>`).join("")}</dl>
-    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.5">Not included: the ~Jun 1 printing-account Bambu order (total unknown), pre-2026 magnet orders, AliExpress pocket magnets, tax and shipping on Amazon items.</div>`;
+const fmt$2=n=>"$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+function renderSpend(){
+  $("#tSpent").textContent=fmt$(SPEND_TOTAL);
+  $("#spendSub").textContent="Verified order records, Apr\u2013Aug 2026";
+  $("#sbar").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<i class="${pend?"pend":""}" style="flex:${v};${pend?"":"background:"+c}" title="${k}: ${fmt$2(v)}"></i>`).join("");
+  $("#slegend").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<div><i class="${pend?"pend":""}" style="${pend?"":"background:"+c}"></i><span class="k">${k}${n?` <em>\u00b7 ${n}</em>`:""}</span><span class="v">${fmt$2(v)}</span><span class="pc">${Math.round(100*v/SPEND_TOTAL)}%</span></div>`).join("");
 }
 function renderCover(){
   const fil=DATA.filter(d=>d.grp!=="Parts"&&d.qty>0);
@@ -658,7 +689,6 @@ function renderCover(){
     return `<a href="${L?L[0]:"#"}" ${L?'target="_blank" rel="noopener"':""}><div class="ph">${vis}</div><div class="cap"><b>${c.color}</b><span>${c.qty} rolls · ${c.type||c.fam}</span></div></a>`;}).join("");
   const brands=new Set(fil.map(d=>d.brand)).size, fams=new Set(fil.map(d=>d.fam)).size;
   const bambu=fil.filter(d=>d.brand==="Bambu Lab").reduce((a,d)=>a+d.qty,0), all=fil.reduce((a,d)=>a+d.qty,0);
-  $("#coverDek").textContent=`${fams} material lines from ${brands} brands. ${Math.round(100*bambu/all)}% of the shelf is Bambu; the rest came in through Amazon and AliExpress. ${fmt$(SPEND_TOTAL)} in verified orders since April \u2014 hover Spent for the breakdown. Tap any name below for the full story on that roll.`;
 }
 function renderAll(){renderTotals();renderCover();renderList();}
 
@@ -672,12 +702,6 @@ $("#csv").addEventListener("click",()=>{
   DATA.forEach(d=>lines.push(`${d.sec},"${d.fam}",${d.type||""},${d.brand},"${d.color}",${d.code},${d.fmt},${d.kg},${d.base},${d.qty}`));
   const blob=new Blob([lines.join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="filament-inventory.csv";a.click();URL.revokeObjectURL(a.href);
 });
-(function(){const tile=document.getElementById("spentTile");
-  const show=()=>{pop.innerHTML=spendPopHTML();pop.style.display="block";const r=tile.getBoundingClientRect(),pw=pop.offsetWidth;let left=r.left+window.scrollX;left=Math.max(window.scrollX+8,Math.min(left,window.scrollX+window.innerWidth-pw-8));pop.style.left=left+"px";pop.style.top=(r.bottom+window.scrollY+8)+"px";requestAnimationFrame(()=>pop.classList.add("show"));popRow=tile;};
-  tile.addEventListener("mouseenter",()=>{clearTimeout(popTimer);popTimer=setTimeout(show,180);});
-  tile.addEventListener("mouseleave",()=>{clearTimeout(popTimer);popTimer=setTimeout(hidePop,150);});
-  tile.addEventListener("click",()=>{popRow===tile&&pop.classList.contains("show")?hidePop():show();});
-})();
 renderAll();
 </script>
 </body>

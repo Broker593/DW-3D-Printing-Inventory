@@ -403,11 +403,7 @@ function renderTotals(){
 function subline(d){
   if(d.grp==="Parts")return d.src||"";
   if(isCat(d))return "Not bought yet";
-  if(d.brand!=="Bambu Lab")return d.brand;
-  const bits=["Bambu"];
-  if(d.fmt==="Refill"||d.fmt==="Spool")bits.push(d.fmt);
-  if(d.kg!==1)bits.push(d.kg+" kg");
-  return bits.join(" \u00b7 ");
+  return d.brand==="Bambu Lab"?"Bambu":d.brand;
 }
 function typeCells(d){
   return COLS.map(c=>`<span>${d.type===c?"\u2713":""}</span>`).join("")+`<span class="o">${COLS.includes(d.type)?"":(d.type||"")}</span>`;

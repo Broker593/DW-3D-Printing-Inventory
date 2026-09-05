@@ -575,7 +575,7 @@ function renderList(){
 const pop=document.getElementById("pop");let popTimer=null,popRow=null;
 function popHTML(d){
   const L=LINKS[d.fam];
-  const visual=d.img?`<img class="pop-img" src="${d.img}" alt="">`:`<div class="pop-dot" style="background:${d.hex}"></div>`;
+  const visual=d.img?`<img class="pop-img" src="${d.img}" alt="" onerror="this.outerHTML='<div class=&quot;pop-dot&quot; style=&quot;background:${d.hex}&quot;></div>'">`:`<div class="pop-dot" style="background:${d.hex}"></div>`;
   const rows=[];
   if(d.type)rows.push(["Type",d.type]);
   if(d.code)rows.push(["SKU",d.code]);
@@ -610,7 +610,7 @@ function renderCover(){
   const fil=DATA.filter(d=>d.grp!=="Parts"&&d.qty>0);
   const byColor={};fil.forEach(d=>{const k=d.fam+"|"+d.color;(byColor[k]=byColor[k]||{fam:d.fam,color:d.color,hex:d.hex,img:d.img,type:d.type,brand:d.brand,qty:0}).qty+=d.qty;});
   const top=Object.values(byColor).sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color)).slice(0,6);
-  const f=$("#feat");f.innerHTML=top.map(c=>{const L=LINKS[c.fam];const vis=c.img?`<img src="${c.img}" alt="">`:`<i style="background:${c.hex}"></i>`;
+  const f=$("#feat");f.innerHTML=top.map(c=>{const L=LINKS[c.fam];const vis=c.img?`<img src="${c.img}" alt="" onerror="this.outerHTML='<i style=&quot;background:${c.hex}&quot;></i>'">`:`<i style="background:${c.hex}"></i>`;
     return `<a href="${L?L[0]:"#"}" ${L?'target="_blank" rel="noopener"':""}><div class="ph">${vis}</div><div class="cap"><b>${c.color}</b><span>${c.qty} rolls · ${c.type||c.fam}</span></div></a>`;}).join("");
   const brands=new Set(fil.map(d=>d.brand)).size, fams=new Set(fil.map(d=>d.fam)).size;
   const bambu=fil.filter(d=>d.brand==="Bambu Lab").reduce((a,d)=>a+d.qty,0), all=fil.reduce((a,d)=>a+d.qty,0);

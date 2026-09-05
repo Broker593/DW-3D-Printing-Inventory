@@ -77,7 +77,7 @@
   .feat{display:flex;align-items:flex-end;gap:10px;margin-bottom:26px;padding:8px 4px 0;min-height:200px}
   .feat a{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:inherit;flex:1 1 0;min-width:0}
   .feat .n{font-family:Anton,Impact,sans-serif;font-size:14px;margin-bottom:4px}
-  .feat .ph{width:100%;max-width:56px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);border-bottom:2px solid var(--rule)}
+  .feat .ph{width:100%;max-width:56px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);border-bottom:2px solid var(--rule)}
   .feat .cap{text-align:center;padding-top:6px;width:100%}
   .feat .cap b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:11px;line-height:1.15;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .feat .cap span{display:block;font-size:8.5px;color:var(--red);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -102,7 +102,7 @@
   .card{background:var(--card);border:1px solid var(--hair);border-top:none}
   .row{display:flex;align-items:center;gap:12px;padding:10px 12px 10px 12px;position:relative}
   .row+.row::before,.thead+.row::before{content:"";position:absolute;left:52px;right:0;top:0;height:1px;background:var(--hair)}
-  .dot{width:28px;height:28px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .dot{width:28px;height:28px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
   @media (prefers-color-scheme:dark){.dot{box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}}
   .meta{flex:1;min-width:0;cursor:default}
   @media (hover:none){.meta{cursor:pointer}}
@@ -185,7 +185,7 @@
     <div class="slegend" id="shelflegend"></div>
   </div>
 </div>
-<div class="feat-h"><span>Most stocked</span><span>Every color with three or more rolls \u00b7 same color grouped across brands</span></div>
+<div class="feat-h"><span>Most stocked</span><span>Every color with three or more rolls · same color grouped across brands</span></div>
 <div class="feat" id="feat"></div>
 <input class="search" id="q" type="search" placeholder="Search" autocomplete="off">
 <div class="sortrow"><span>Sort</span>
@@ -209,45 +209,45 @@
 <script>
 const DATA = [
  // PLA Basic (29)
- {fam:"PLA Basic",grp:"PLA",color:"Jade White",code:"10100",hex:"#F2F3EF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/825eebc0e105490dbbc7a9abb287db1f/Rectangle_1279.jpg",qty:2},
- {fam:"PLA Basic",grp:"PLA",color:"Jade White",code:"10100",hex:"#F2F3EF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/825eebc0e105490dbbc7a9abb287db1f/Rectangle_1279.jpg",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Jade White",code:"10100",hex:"#FFFFFF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/825eebc0e105490dbbc7a9abb287db1f/Rectangle_1279.jpg",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Jade White",code:"10100",hex:"#FFFFFF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/825eebc0e105490dbbc7a9abb287db1f/Rectangle_1279.jpg",qty:2},
  {fam:"PLA Basic",grp:"PLA",color:"Blue",code:"10601",hex:"#0A2989",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/54670201f19c4a079a23de8251c4b829/0cbb7037758240b4873f9a90ab4dbe10.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Blue",code:"10601",hex:"#0A2989",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/54670201f19c4a079a23de8251c4b829/0cbb7037758240b4873f9a90ab4dbe10.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Yellow",code:"10400",hex:"#F4EE2A",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/c58234d6b11340788c0c03548222b8bd/3b0e7a2600f44088b06cb185a3f87e04.media",qty:2},
  {fam:"PLA Basic",grp:"PLA",color:"Blue Grey",code:"10602",hex:"#5B6579",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4aab90399fe34105a3af69098a6e7d50/4e3637d99a73483bab1ce84fd7628a36.media",qty:2},
- {fam:"PLA Basic",grp:"PLA",color:"Maroon Red",code:"10205",hex:"#772B2A",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9a16426731d04493bfbc93d671b8286f/6ddd230906194a7fa5403e2cc1d7ae77.png",qty:2},
- {fam:"PLA Basic",grp:"PLA",color:"Cobalt Blue",code:"10604",hex:"#0056B8",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9148bcf8138d4223892988d4b850079f/abd43099726847d6b189bec773ef1833.png",qty:2},
- {fam:"PLA Basic",grp:"PLA",color:"Black",code:"10101",hex:"#101010",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/c087aa5167c94817b0795fd821ac4116/352e8e214fb4462ba7e6b1381c32fe9f.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Maroon Red",code:"10205",hex:"#9D2236",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9a16426731d04493bfbc93d671b8286f/6ddd230906194a7fa5403e2cc1d7ae77.png",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Cobalt Blue",code:"10604",hex:"#0055B8",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9148bcf8138d4223892988d4b850079f/abd43099726847d6b189bec773ef1833.png",qty:2},
+ {fam:"PLA Basic",grp:"PLA",color:"Black",code:"10101",hex:"#000000",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/c087aa5167c94817b0795fd821ac4116/352e8e214fb4462ba7e6b1381c32fe9f.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Mistletoe Green",code:"10502",hex:"#3F8E43",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/5a9e1fca8bba4dfca7579ae39f0c6a07/21f4f3191dfd4fd58f68fdb8b2be4ec4.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Beige",code:"10201",hex:"#F7E6DE",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/eaee9c70ea5f4c74bfd4f1eb63c34a67/fa231273753d477b9d99afa19761f820.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Cyan",code:"10603",hex:"#0086D6",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/af1ce799941a407bbc3964e00dc3191a/d665a3540d334035abc278b0b80e4898.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Light Gray",code:"10104",hex:"#D1D3D5",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/c323ac060ebe4bcdb046c06f5d09f346/b7c9db2942374e2793d9865461076ac4.png",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Dark Gray",code:"10105",hex:"#545454",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/a08055776b464878bb311a88e1518931/03aedbaaff8943f892b58438f98cac89.png",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Silver",code:"10102",hex:"#A6A9AA",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/68ca516ec31046738cf567505471be03/8b789e9f61b14b54a248f813ea523191.media",qty:1},
- {fam:"PLA Basic",grp:"PLA",color:"Sunflower Yellow",code:"10402",hex:"#FEC600",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/949b1bda3c134a23b3634dec8c851221/f84eee46ecb848e69c2e6a5c197a9958.png",qty:1},
- {fam:"PLA Basic",grp:"PLA",color:"Brown",code:"10800",hex:"#6B4E3D",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4262bd833add4a43a5bd60dde61a13fc/ae017fb32657451aaa0eecec9ad1b748.media",qty:1},
- {fam:"PLA Basic",grp:"PLA",color:"Pumpkin Orange",code:"10301",hex:"#FF9016",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/6feea19ab1c64d4ba10aeb1b33285a07/ff733c26d9be457fb44ee270f2720827.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Sunflower Yellow",code:"10402",hex:"#FEC601",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/949b1bda3c134a23b3634dec8c851221/f84eee46ecb848e69c2e6a5c197a9958.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Brown",code:"10800",hex:"#9D432C",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4262bd833add4a43a5bd60dde61a13fc/ae017fb32657451aaa0eecec9ad1b748.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Pumpkin Orange",code:"10301",hex:"#FF8E16",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/6feea19ab1c64d4ba10aeb1b33285a07/ff733c26d9be457fb44ee270f2720827.png",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Red",code:"10200",hex:"#C12E1F",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/c095828cb46044269274717bfbab0566/377d91b1263f40968ca1973b0d2839e4.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Gold",code:"10401",hex:"#E4BD68",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/d37bc626a6a54850868919dde038b48b/969f0c8921214ece8dbced65341fcbce.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Bronze",code:"10801",hex:"#847D48",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/375701952d3440f690199d26ffb7661f/8b75222ce246480184025993a40b948b.media",qty:1},
- {fam:"PLA Basic",grp:"PLA",color:"Indigo Purple",code:"10701",hex:"#482960",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9964ecd589c8470fb6fac72d2ce8c251/d65aebf923b840af881f23286fb7d9b3.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Indigo Purple",code:"10701",hex:"#482A60",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9964ecd589c8470fb6fac72d2ce8c251/d65aebf923b840af881f23286fb7d9b3.png",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Purple",code:"10700",hex:"#5E43B7",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/3feef4907f88467fa6db5f075d043ad7/8324030333a34c54b8472e5682d19f3f.media",qty:1},
- {fam:"PLA Basic",grp:"PLA",color:"Bright Green",code:"10503",hex:"#35C43B",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/187c939db99748169d23888c93982f8a/5578164bff51480a9c550ef390348ec1.png",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Bright Green",code:"10503",hex:"#BDCF00",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/187c939db99748169d23888c93982f8a/5578164bff51480a9c550ef390348ec1.png",qty:1},
  // PLA Basic — in catalog, not yet bought
- {fam:"PLA Basic",grp:"PLA",color:"Bambu Green",code:"10501",hex:"#00AE42",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/210e37dd99f24949b9be3270effb3be0/7044786b85d44df9bbe872c6e5d87518.media",qty:1},
+ {fam:"PLA Basic",grp:"PLA",color:"Bambu Green",code:"10501",hex:"#16C344",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/210e37dd99f24949b9be3270effb3be0/7044786b85d44df9bbe872c6e5d87518.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Gray",code:"10103",hex:"#8E9089",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/3ad1b7f0aa4a4ea6af2a2e7121553bbf/d870efeaced648c6a3f390db1f55f725.media",qty:1},
  {fam:"PLA Basic",grp:"PLA",color:"Orange",code:"10300",hex:"#FF6A13",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/145d5d616c334260a8f4f6a3a54cf87c/3b7d85f463734924842171fab890a603.media",qty:0},
- {fam:"PLA Basic",grp:"PLA",color:"Pink",code:"10203",hex:"#F5B6CD",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/2d7c287e96f548998468abd5292e6a5c/16d81c82e3ac470c9abccfdda3e98ded.media",qty:0},
- {fam:"PLA Basic",grp:"PLA",color:"Hot Pink",code:"10204",hex:"#F5547C",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/ff8fe218b8494acdb6762c3b61b20174/ed844344991348f79a91dfe9aeba362e.png",qty:0},
+ {fam:"PLA Basic",grp:"PLA",color:"Pink",code:"10203",hex:"#F55A74",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/2d7c287e96f548998468abd5292e6a5c/16d81c82e3ac470c9abccfdda3e98ded.media",qty:0},
+ {fam:"PLA Basic",grp:"PLA",color:"Hot Pink",code:"10204",hex:"#F5547D",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/ff8fe218b8494acdb6762c3b61b20174/ed844344991348f79a91dfe9aeba362e.png",qty:0},
  {fam:"PLA Basic",grp:"PLA",color:"Magenta",code:"10202",hex:"#EC008C",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/32faf71cc7ef49078d00e066f26a0af1/e09bc62c304443d8b33302b42f8ef2ca.media",qty:0},
  {fam:"PLA Basic",grp:"PLA",color:"Turquoise",code:"10605",hex:"#00B1B7",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/8a6f3f028f5a4b5782fc5c0730d127ec/9f0327d603c345ac99fcb795cc783dff.png",qty:0},
  {fam:"PLA Basic",grp:"PLA",color:"Cocoa Brown",code:"10802",hex:"#6F5034",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4bbaa998c8f34ab89cb0ce632fbf632f/91d13e7d3dd54a89948200e82353998f.png",qty:1},
  // PLA Matte (25)
- {fam:"PLA Matte",grp:"PLA",color:"Matte Charcoal",code:"11101",hex:"#2B2B2B",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/2588d450183643ad9908c3b2c014493c/9873c26227394682ab9270a8e0868f0f.media",qty:3},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Charcoal",code:"11101",hex:"#2B2B2B",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/2588d450183643ad9908c3b2c014493c/9873c26227394682ab9270a8e0868f0f.media",qty:4},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Ivory White",code:"11100",hex:"#F1EFE4",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4dfda2ea267145fea524b5b01183a1d3/c8693a709e0442f384bad600d03fe0c3.media",qty:2},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Ivory White",code:"11100",hex:"#F1EFE4",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4dfda2ea267145fea524b5b01183a1d3/c8693a709e0442f384bad600d03fe0c3.media",qty:3},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Blue",code:"11602",hex:"#1C2A50",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/f005ddb1b3e94256a6023088a371c915/353e1dc2aced4c808db0c85d394bbee6.media",qty:4},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Charcoal",code:"11101",hex:"#000000",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/2588d450183643ad9908c3b2c014493c/9873c26227394682ab9270a8e0868f0f.media",qty:3},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Charcoal",code:"11101",hex:"#000000",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/2588d450183643ad9908c3b2c014493c/9873c26227394682ab9270a8e0868f0f.media",qty:4},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Ivory White",code:"11100",hex:"#FFFFFF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/4dfda2ea267145fea524b5b01183a1d3/c8693a709e0442f384bad600d03fe0c3.media",qty:2},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Ivory White",code:"11100",hex:"#FFFFFF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4dfda2ea267145fea524b5b01183a1d3/c8693a709e0442f384bad600d03fe0c3.media",qty:3},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Blue",code:"11602",hex:"#042F56",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/f005ddb1b3e94256a6023088a371c915/353e1dc2aced4c808db0c85d394bbee6.media",qty:4},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Marine Blue",code:"11600",hex:"#0078BF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9388663cc50f48339710e5bb2444ccfb/c3f24581020141108a78632680271e09.media",qty:2},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Nardo Gray",code:"11104",hex:"#757575",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/35632053903347a7b4feabe27c0a5fd0/Rectangle_4543.png",qty:2},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Scarlet Red",code:"11200",hex:"#DE4343",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/507a8943f9ad475087200d6198752cb1/e97d6f747715417d8c2d5c0aeb2554f0.media",qty:1},
@@ -255,38 +255,38 @@ const DATA = [
  {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Red",code:"11202",hex:"#BB3D43",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/f612ed2615aa4c29bbefeed16e8bc46e/16a6cddd38c5427fbe0c043acf4fdec4.media",qty:1},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Lemon Yellow",code:"11400",hex:"#F7D959",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/80f14ed4a26d437c87a2c75cd9e2fd61/147b2c8c833e4625a552584ce4ac94e2.media",qty:1},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Terracotta",code:"11203",hex:"#B15533",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/beed1f7cc49c46658fc22dd911f75750/Rectangle_4542.png",qty:1},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Green",code:"11501",hex:"#38574A",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/941042ae51b44dfb9676fe6c466bd427/cf87d8d749a64146abd1f02c4a9a79ad.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Green",code:"11501",hex:"#68724D",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/941042ae51b44dfb9676fe6c466bd427/cf87d8d749a64146abd1f02c4a9a79ad.media",qty:1},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Bone White",code:"11103",hex:"#CBC6B8",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/a4fa9b00833d4034ac3ee2c23b6572fe/Rectangle_4535.png",qty:1},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Ash Gray",code:"11102",hex:"#9B9EA0",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9501600ddc594f93a8c68cc790601582/bac67500773d4a7fbd285fbfc2aaa9a7.media",qty:2},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Sakura Pink",code:"11201",hex:"#E8AFCF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/753cb281a8eb43429252a899494509be/a54f8229fa6e4c2eb714c34972fa6a82.media",qty:1},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Sky Blue",code:"11603",hex:"#56B7E6",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/9f13bc24194348eab9cc55f54c1aaa4b/Rectangle_4540.png",qty:1},
  // PLA Matte — in catalog, not yet bought
  {fam:"PLA Matte",grp:"PLA",color:"Matte Ice Blue",code:"11601",hex:"#A3D8E1",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/a530c57b4be5472ca6db0fa868c1ba0a/c07627cfd70f4ccfa787d4d12dad6d4b.media",qty:1},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Apple Green",code:"11502",hex:"#9CCE55",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/e96f1a0495744cae916e0ebac015a616/Rectangle_4539.png",qty:0},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Grass Green",code:"11500",hex:"#5B8A3C",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/ba9e1c06897c4aea8ccf11f017fa4ecb/f375a162834a4dd6ad40b3d3cd2bd23b.media",qty:1},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Mandarin Orange",code:"11300",hex:"#F27C39",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9e35cf5a500946929370ba9bfda7c589/50858ad786c3414daaacb1f29eead215.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Apple Green",code:"11502",hex:"#C2E189",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/e96f1a0495744cae916e0ebac015a616/Rectangle_4539.png",qty:0},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Grass Green",code:"11500",hex:"#61C680",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/ba9e1c06897c4aea8ccf11f017fa4ecb/f375a162834a4dd6ad40b3d3cd2bd23b.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Mandarin Orange",code:"11300",hex:"#F99963",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9e35cf5a500946929370ba9bfda7c589/50858ad786c3414daaacb1f29eead215.media",qty:1},
  {fam:"PLA Matte",grp:"PLA",color:"Matte Lilac Purple",code:"11700",hex:"#AE96D4",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/98824cdda2ff471e98ceed81607d9244/47be9dad231d4e7c9d84086cd677e8dd.media",qty:0},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Plum",code:"11204",hex:"#8E3B65",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/1b4fd1fc84064a3b97d75350342f690f/Rectangle_4537.png",qty:0},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Caramel",code:"11803",hex:"#BE8A55",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/ec3690a87060481da0726bea544bcfb4/Rectangle_4541.png",qty:1},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Latte Brown",code:"11800",hex:"#BFA284",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c0b1bb76cc7a43ce8ba53fc4f4d380f9/80e94033ac314bb58c08c48a93156c8b.media",qty:0},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Brown",code:"11801",hex:"#4D3324",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/50f2cab7433b45feadc65018787ceae4/926ff77d477d4f6c9fcb8c76fdefa7b2.media",qty:1},
- {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Chocolate",code:"11802",hex:"#3A2A20",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/2cd3690d622444d3bd60e2db970c7c0f/Rectangle_4536.png",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Plum",code:"11204",hex:"#950051",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/1b4fd1fc84064a3b97d75350342f690f/Rectangle_4537.png",qty:0},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Caramel",code:"11803",hex:"#AE835B",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/ec3690a87060481da0726bea544bcfb4/Rectangle_4541.png",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Latte Brown",code:"11800",hex:"#D3B7A7",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c0b1bb76cc7a43ce8ba53fc4f4d380f9/80e94033ac314bb58c08c48a93156c8b.media",qty:0},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Brown",code:"11801",hex:"#7D6556",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/50f2cab7433b45feadc65018787ceae4/926ff77d477d4f6c9fcb8c76fdefa7b2.media",qty:1},
+ {fam:"PLA Matte",grp:"PLA",color:"Matte Dark Chocolate",code:"11802",hex:"#4D3324",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/2cd3690d622444d3bd60e2db970c7c0f/Rectangle_4536.png",qty:1},
  // PLA Silk+ (5)
  {fam:"PLA Silk+",grp:"PLA",color:"Candy Red",code:"13205",hex:"#D02727",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/83ead94c84eb418d81347df534869637/74d0884c3c3e48deb606dff285cb9c50.png",qty:1},
  {fam:"PLA Silk+",grp:"PLA",color:"Silver",code:"13109",hex:"#C8C8C8",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/d94ce891eea54282b2a4fd12658385ca/07d108b79a8a4b2bbf2e1087381a720b.png",qty:1},
  {fam:"PLA Silk+",grp:"PLA",color:"Titan Gray",code:"13108",hex:"#5F6367",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9bedc7ffdbfe4d63a456d7e1d454f27a/8508648cec13489ab718c418b5f1f6fc.png",qty:1},
  {fam:"PLA Silk+",grp:"PLA",color:"Blue",code:"13604",hex:"#008BDA",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4674d5e282be42519fa5895bfece3864/a8ca2a3c76ed4b9aa59cbe9252a257da.png",qty:1},
- {fam:"PLA Silk+",grp:"PLA",color:"White",code:"13110",hex:"#F4F4F4",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/d668a260a33a4169954d3438e852646d/5710aedc075446f694ec8a393a779be2.png",qty:1},
- {fam:"PLA Translucent",grp:"PLA",color:"Ice Blue",code:"13610",hex:"#BFE4F2",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/8bca6cc749bf4010b10cd6b92a53a3b2/Rectangle_4557.png",qty:1},
+ {fam:"PLA Silk+",grp:"PLA",color:"White",code:"13110",hex:"#FFFFFF",fmt:"Refill",img:"https://store.bblcdn.com/s7/default/d668a260a33a4169954d3438e852646d/5710aedc075446f694ec8a393a779be2.png",qty:1},
+ {fam:"PLA Translucent",grp:"PLA",color:"Ice Blue",code:"13610",hex:"#B8CDE9",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/8bca6cc749bf4010b10cd6b92a53a3b2/Rectangle_4557.png",qty:1},
  // PLA specialty (7)
  {fam:"PLA Marble",grp:"PLA",color:"Red Granite",code:"13201",hex:"#AD4E38",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/f018eb8c4f764652a3454c6920ab27e2/e307b76c7c9f46b5a8c8782feb9ff23e.media",qty:1},
  {fam:"PLA Marble",grp:"PLA",color:"White Marble",code:"13103",hex:"#F7F3F0",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/44120e4b0fd241e8a3743a1007b3b85c/8cf690c4676c41c68f0ca540f84785a5.media",qty:1},
- {fam:"PLA Wood",grp:"PLA",color:"Black Walnut",code:"13107",hex:"#4F3B26",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/87f38658a86d46bfa25b8983d61f672f/55bfe8a8f9e64d0ebd78df70a08296bd.png",qty:1},
+ {fam:"PLA Wood",grp:"PLA",color:"Black Walnut",code:"13107",hex:"#4F3F24",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/87f38658a86d46bfa25b8983d61f672f/55bfe8a8f9e64d0ebd78df70a08296bd.png",qty:1},
  {fam:"PLA Sparkle",grp:"PLA",color:"Onyx Black Sparkle",code:"13101",hex:"#2D2B28",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/c94563c3b70a46c285eeb00340edacaa/39cb6cb6eeee4eb088b240625c54450d.media",qty:1},
- {fam:"PLA Tough+",grp:"PLA",color:"Orange",code:"12301",hex:"#FF6A13",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/190467eafb084a1f85ebb5fecafa010a/Rectangle_4558.jpg",qty:1},
- {fam:"PLA Aero",grp:"PLA",color:"Gray",code:"14104",hex:"#808A87",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9ca7834d953c4899a82db34be5fac7ff/173c55194eba466fa2aab8bbe39d8dd8.png",qty:1},
+ {fam:"PLA Tough+",grp:"PLA",color:"Orange",code:"12301",hex:"#DC3926",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/190467eafb084a1f85ebb5fecafa010a/Rectangle_4558.jpg",qty:1},
+ {fam:"PLA Aero",grp:"PLA",color:"Gray",code:"14104",hex:"#CDCECA",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/9ca7834d953c4899a82db34be5fac7ff/173c55194eba466fa2aab8bbe39d8dd8.png",qty:1},
  {fam:"PLA-CF",grp:"PLA",color:"Lava Gray",code:"14101",hex:"#4D5054",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/ac6112026f4946d3915747bc14f30a43/427503a66a8a4b2e8f0749fef1b2f3e9.media",qty:1},
- {fam:"PLA Glow",grp:"PLA",color:"Glow Green",code:"15500",hex:"#9BF25B",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/5218f88774e34104a0359c400a99dcbd/0592e39f21c74879a6cd329646c157d5.media",qty:1},
+ {fam:"PLA Glow",grp:"PLA",color:"Glow Green",code:"15500",hex:"#A1FFAC",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/5218f88774e34104a0359c400a99dcbd/0592e39f21c74879a6cd329646c157d5.media",qty:1},
  // Amazon — third-party PLA
  {fam:"eSUN PLA+",grp:"PLA",color:"Bone White",code:"",src:"Amazon",hex:"#EDE6D6",fmt:"Spool",qty:1},
  {fam:"eSUN PLA+",grp:"PLA",color:"Fire Engine Red",code:"",src:"Amazon",hex:"#CE2029",fmt:"Spool",qty:1},
@@ -306,37 +306,37 @@ const DATA = [
  {fam:"ANYCUBIC PLA",grp:"PLA",color:"Texture Red",code:"",src:"Ali",hex:"#B3262A",fmt:"Spool",qty:2},
  {fam:"ANYCUBIC PLA",grp:"PLA",color:"Black",code:"",src:"Ali",hex:"#141414",fmt:"Spool",qty:2},
  // PETG (5)
- {fam:"PETG HF",grp:"PETG",color:"Orange",code:"33300",hex:"#FF911A",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/5c5e4de6b8424bb8b84793e8dcc9802e/bfa461028ea3467aa362bbe369a84500.png",qty:1},
- {fam:"PETG HF",grp:"PETG",color:"Yellow",code:"33400",hex:"#FFD00F",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/58af1b6933954bd5af530072c5e9c5b1/884a185a0d6e4b58a9c055dcfabe7174.png",qty:1},
- {fam:"PETG HF",grp:"PETG",color:"White",code:"33100",hex:"#F5F5F2",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4a7f9361225f4f69b388615e247f3b62/d0124e2bbb174c8ba1bad0675d35e37a.png",qty:1},
- {fam:"PETG Basic",grp:"PETG",color:"Reflex Blue",code:"30603",hex:"#1F3696",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/0a859e38583a48c496395f8a2dbce944/Rectangle_4614.jpg",qty:1},
- {fam:"PETG Basic",grp:"PETG",color:"White",code:"30106",hex:"#F4F4F1",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/3193b19f31b84ea2a91fa98b3929ca2a/Rectangle_4610.jpg",qty:1},
- {fam:"PETG Basic",grp:"PETG",color:"Gray",code:"30107",hex:"#9EA2A5",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/b60f55d01ff34a74955e7cfa63774578/Rectangle_4611.jpg",qty:1},
- {fam:"PETG Basic",grp:"PETG",color:"Red",code:"30201",hex:"#C63B34",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/7f178cfa2e2949cab16d65766809bd9e/Rectangle_4612.jpg",qty:1},
- {fam:"PETG Basic",grp:"PETG",color:"Misty Blue",code:"30108",hex:"#A9C7D8",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/f7d177dcd90c4180a8d105ebd8522adf/Misty_Blue.jpg",qty:1},
- {fam:"PETG Basic",grp:"PETG",color:"Navy Blue",code:"30604",hex:"#1F3A63",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/2e65b30a87634dab96b3178ec99cf1da/Navy_Blue.jpg",qty:1},
+ {fam:"PETG HF",grp:"PETG",color:"Orange",code:"33300",hex:"#F75403",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/5c5e4de6b8424bb8b84793e8dcc9802e/bfa461028ea3467aa362bbe369a84500.png",qty:1},
+ {fam:"PETG HF",grp:"PETG",color:"Yellow",code:"33400",hex:"#FFD00B",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/58af1b6933954bd5af530072c5e9c5b1/884a185a0d6e4b58a9c055dcfabe7174.png",qty:1},
+ {fam:"PETG HF",grp:"PETG",color:"White",code:"33100",hex:"#FFFFFF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4a7f9361225f4f69b388615e247f3b62/d0124e2bbb174c8ba1bad0675d35e37a.png",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Reflex Blue",code:"30603",hex:"#001389",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/0a859e38583a48c496395f8a2dbce944/Rectangle_4614.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"White",code:"30106",hex:"#FFFFFF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/3193b19f31b84ea2a91fa98b3929ca2a/Rectangle_4610.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Gray",code:"30107",hex:"#7F7E83",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/b60f55d01ff34a74955e7cfa63774578/Rectangle_4611.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Red",code:"30201",hex:"#D6001C",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/7f178cfa2e2949cab16d65766809bd9e/Rectangle_4612.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Misty Blue",code:"30108",hex:"#688197",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/f7d177dcd90c4180a8d105ebd8522adf/Misty_Blue.jpg",qty:1},
+ {fam:"PETG Basic",grp:"PETG",color:"Navy Blue",code:"30604",hex:"#0185D7",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/2e65b30a87634dab96b3178ec99cf1da/Navy_Blue.jpg",qty:1},
  {fam:"PETG Translucent",grp:"PETG",color:"Clear",code:"32101",hex:"#EDEFF0",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/f4dd56ed2651490b96abe80c7dc9dcad/daf1de2327714f57bd6aa32670d329cc.media",qty:1},
  // PETG HF — in catalog, not yet bought
- {fam:"PETG HF",grp:"PETG",color:"Black",code:"33102",hex:"#151515",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/6c735633c22748908ff584f9f5e1de89/0cf39d0e4c6c43b38fef498561894508.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Dark Gray",code:"33103",hex:"#4A4A4A",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c5498dad6adb4a4eaadde859a7f997ea/1607ecea09a94ff7b3d985685aa31d54.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Gray",code:"33101",hex:"#9FA3A6",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/5582df632ed74f38a00384ddb2c2064e/9a7dade47ad44a37a39325b7363a0370.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Cream",code:"33401",hex:"#F3E9CE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/13884494e0354d6f952db38ca365f3e0/61202de96c7c49ccab34f0cc001157ee.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Red",code:"33200",hex:"#D32E2E",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/709cf02acaca4145952913934f200a53/6f6460b12d9348e99b5070a8284c0409.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Peanut Brown",code:"33801",hex:"#A5764C",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/365fda6e85eb4d8896228f46a1d544b0/99c7222bb9d644df8f46109bb1a099da.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Lime Green",code:"33501",hex:"#A6D420",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/153b1266f7334a3f8cce41e99924e32a/38812377e81940668994d607c5af121f.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Green",code:"33500",hex:"#0B9B5B",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/f2b2a518b63248339b48fa4da8ed5c3e/aee675e95734414ca1e9b6f83ba6e7cf.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Forest Green",code:"33502",hex:"#21503F",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/8620e8a63e7d46d2a488d7282c2b97fb/616eb09aec544622963c5f1a9fb6424a.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Lake Blue",code:"33601",hex:"#2A7FC9",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/9d372967762642129819a39527033e1b/26cf49afc41b4a8eb01f53084a0aba3c.png",qty:0},
- {fam:"PETG HF",grp:"PETG",color:"Blue",code:"33600",hex:"#1E4B9E",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/945e8fad01b048b6b79c3c15859265b8/a3478612f8b24e47b12a3d86116de7a6.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Black",code:"33102",hex:"#000000",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/6c735633c22748908ff584f9f5e1de89/0cf39d0e4c6c43b38fef498561894508.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Dark Gray",code:"33103",hex:"#515151",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c5498dad6adb4a4eaadde859a7f997ea/1607ecea09a94ff7b3d985685aa31d54.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Gray",code:"33101",hex:"#ADB1B2",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/5582df632ed74f38a00384ddb2c2064e/9a7dade47ad44a37a39325b7363a0370.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Cream",code:"33401",hex:"#F9DFB9",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/13884494e0354d6f952db38ca365f3e0/61202de96c7c49ccab34f0cc001157ee.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Red",code:"33200",hex:"#EB3A3A",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/709cf02acaca4145952913934f200a53/6f6460b12d9348e99b5070a8284c0409.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Peanut Brown",code:"33801",hex:"#875718",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/365fda6e85eb4d8896228f46a1d544b0/99c7222bb9d644df8f46109bb1a099da.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Lime Green",code:"33501",hex:"#6EE53C",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/153b1266f7334a3f8cce41e99924e32a/38812377e81940668994d607c5af121f.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Green",code:"33500",hex:"#00AE42",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/f2b2a518b63248339b48fa4da8ed5c3e/aee675e95734414ca1e9b6f83ba6e7cf.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Forest Green",code:"33502",hex:"#39541A",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/8620e8a63e7d46d2a488d7282c2b97fb/616eb09aec544622963c5f1a9fb6424a.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Lake Blue",code:"33601",hex:"#1F79E5",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/9d372967762642129819a39527033e1b/26cf49afc41b4a8eb01f53084a0aba3c.png",qty:0},
+ {fam:"PETG HF",grp:"PETG",color:"Blue",code:"33600",hex:"#002E96",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/945e8fad01b048b6b79c3c15859265b8/a3478612f8b24e47b12a3d86116de7a6.png",qty:0},
  // PETG Translucent — in catalog, not yet bought
- {fam:"PETG Translucent",grp:"PETG",color:"Gray",code:"32100",hex:"#BFC4C7",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/89c68be306594e00840d023526d07861/ad3609015eb94c1bbca999caf63e20f6.media",qty:0},
- {fam:"PETG Translucent",grp:"PETG",color:"Light Blue",code:"32600",hex:"#A8D5EE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/eb22f4c236594b24acb9ccf60d3c2caf/342df5a8028045e49ad43889ca05d3a7.media",qty:0},
- {fam:"PETG Translucent",grp:"PETG",color:"Teal",code:"32501",hex:"#6FC5BE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/4c9f8c155c174e478018cc44cf031cfb/0f982290866445e2aa2a0e87f3999f85.media",qty:0},
- {fam:"PETG Translucent",grp:"PETG",color:"Olive",code:"32500",hex:"#AEB65A",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/aedce0713b0f4abb9b0b6730e52be253/e0a9f45779d04ae28677449c1ff03d44.media",qty:0},
- {fam:"PETG Translucent",grp:"PETG",color:"Orange",code:"32300",hex:"#F8A055",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c66eeabfd6ca486db3c2a6fed2f282a8/5f5b2ce4c11b4a7bb6a577d658fb2c8b.media",qty:0},
- {fam:"PETG Translucent",grp:"PETG",color:"Pink",code:"32200",hex:"#F6B8CE",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/19136aee68624543b2f4ea9d2a496d54/042c27699ca7449ba6b4adc1d0b54b00.media",qty:0},
- {fam:"PETG Translucent",grp:"PETG",color:"Purple",code:"32700",hex:"#C39BDB",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/25c823e18c964300ae363a5693b400b3/d7588868519f40ed9286d9230e2f3ae1.media",qty:0},
- {fam:"PETG Translucent",grp:"PETG",color:"Brown",code:"32800",hex:"#B98157",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/a7ecdd3737ce4e18abb986f83a081a3e/62a0a80a60d4438d9cdf6624bdef3643.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Gray",code:"32100",hex:"#8E8E8E",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/89c68be306594e00840d023526d07861/ad3609015eb94c1bbca999caf63e20f6.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Light Blue",code:"32600",hex:"#61B0FF",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/eb22f4c236594b24acb9ccf60d3c2caf/342df5a8028045e49ad43889ca05d3a7.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Teal",code:"32501",hex:"#77EDD7",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/4c9f8c155c174e478018cc44cf031cfb/0f982290866445e2aa2a0e87f3999f85.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Olive",code:"32500",hex:"#748C45",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/aedce0713b0f4abb9b0b6730e52be253/e0a9f45779d04ae28677449c1ff03d44.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Orange",code:"32300",hex:"#FF911A",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/c66eeabfd6ca486db3c2a6fed2f282a8/5f5b2ce4c11b4a7bb6a577d658fb2c8b.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Pink",code:"32200",hex:"#F9C1BD",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/19136aee68624543b2f4ea9d2a496d54/042c27699ca7449ba6b4adc1d0b54b00.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Purple",code:"32700",hex:"#D6ABFF",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/25c823e18c964300ae363a5693b400b3/d7588868519f40ed9286d9230e2f3ae1.media",qty:0},
+ {fam:"PETG Translucent",grp:"PETG",color:"Brown",code:"32800",hex:"#E5C688",fmt:"\u2014",img:"https://store.bblcdn.com/s7/default/a7ecdd3737ce4e18abb986f83a081a3e/62a0a80a60d4438d9cdf6624bdef3643.media",qty:0},
  // Amazon — third-party PETG-class
  {fam:"Creality PETG",grp:"PETG",color:"Black",code:"",src:"Amazon",hex:"#161616",fmt:"Spool",qty:1},
  {fam:"Overture PETG",grp:"PETG",color:"Black",code:"",src:"Amazon",hex:"#141414",fmt:"Spool",qty:1},
@@ -344,13 +344,13 @@ const DATA = [
  {fam:"Polymaker PET-CF",grp:"PETG",color:"Black",code:"",src:"Amazon",hex:"#1C1C1C",fmt:"Spool",qty:1,kg:0.5},
  {fam:"3D-Fuel PCTG",grp:"PETG",color:"Natural",code:"",src:"Amazon",hex:"#E8E9E4",fmt:"Spool",qty:1},
  // Engineering (4)
- {fam:"ABS",grp:"ABS/ASA",color:"Silver",code:"40102",hex:"#9A9EA3",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/06ec2d59ef0347fa876cb303e2d7114e/522789b7d815491293c866621998b103.media",qty:1},
- {fam:"ASA",grp:"ABS/ASA",color:"Gray",code:"45102",hex:"#8A8D8F",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/6165d25792ba48ab97860e4cb515a734/7e5829465d8a48b39c5ad1d103db0b5e.media",qty:1},
- {fam:"TPU 90A",grp:"TPU",color:"Black",code:"51103",hex:"#1A1A1A",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4f46fb27e7734edba99282302afc7ff3/BLACK.jpg",qty:1},
- {fam:"TPU for AMS",grp:"TPU",color:"Black",code:"53101",hex:"#1A1A1A",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/7eefb613a3b14f699108b21b4a711401/74b4aac572d94f2eb9549b373b81d2de.png",qty:1},
+ {fam:"ABS",grp:"ABS/ASA",color:"Silver",code:"40102",hex:"#87909A",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/06ec2d59ef0347fa876cb303e2d7114e/522789b7d815491293c866621998b103.media",qty:1},
+ {fam:"ASA",grp:"ABS/ASA",color:"Gray",code:"45102",hex:"#8A949E",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/6165d25792ba48ab97860e4cb515a734/7e5829465d8a48b39c5ad1d103db0b5e.media",qty:1},
+ {fam:"TPU 90A",grp:"TPU",color:"Black",code:"51103",hex:"#000000",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/4f46fb27e7734edba99282302afc7ff3/BLACK.jpg",qty:1},
+ {fam:"TPU for AMS",grp:"TPU",color:"Black",code:"53101",hex:"#000000",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/7eefb613a3b14f699108b21b4a711401/74b4aac572d94f2eb9549b373b81d2de.png",qty:1},
  // Support (2 x 0.5kg)
- {fam:"Support PLA/PETG",grp:"Support",color:"Nature",code:"65102",hex:"#ECE2CB",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/b7e5fd8ab0414529bbb6acd6fc6ce2b8/450b2b2431104c62ad28fb6131f20220.png",qty:1,kg:0.5},
- {fam:"Support PLA (New)",grp:"Support",color:"White",code:"65104",hex:"#F3F1EC",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/01f07d18a78c40b98c6ef026f4810ea5/Rectangle_1274.png",qty:1,kg:0.5},
+ {fam:"Support PLA/PETG",grp:"Support",color:"Nature",code:"65102",hex:"#FFFFFF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/b7e5fd8ab0414529bbb6acd6fc6ce2b8/450b2b2431104c62ad28fb6131f20220.png",qty:1,kg:0.5},
+ {fam:"Support PLA (New)",grp:"Support",color:"White",code:"65104",hex:"#FFFFFF",fmt:"Spool",img:"https://store.bblcdn.com/s7/default/01f07d18a78c40b98c6ef026f4810ea5/Rectangle_1274.png",qty:1,kg:0.5},
  // H2C hotends — 8 included with the printer + 7 purchased (parts, excluded from roll/kg totals)
  {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.4mm Hardened Steel",code:"",src:"4 included \u00b7 2 from Utility bundle",hex:"#5F646B",fmt:"Part",img:"https://store.bblcdn.com/s7/default/65c50e4a5f484221b8bb32ba9a512be0/FAH051.png",qty:6,kg:0},
  {fam:"H2C Right Hotends (Induction)",grp:"Parts",color:"0.2mm Stainless Steel",code:"",src:"Aug 3 order",hex:"#9CA1A8",fmt:"Part",img:"https://store.bblcdn.com/s7/default/65c50e4a5f484221b8bb32ba9a512be0/FAH051.png",qty:3,kg:0},
@@ -712,7 +712,7 @@ const SPEND=[
 const SPEND_TOTAL=SPEND.reduce((a,s)=>a+s[1],0);
 const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
 const fmt$2=n=>"$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const FAMILY_COLOR={Red:"#c8102e",Orange:"#f07a1a",Yellow:"#f2c744",Green:"#3f8e43",Teal:"#2aa7a0",Blue:"#1f4ea3",Purple:"#6a4bb5",Pink:"#e89ac0",Brown:"#7a5236",White:"#f3efe6",Gray:"#9a9a9a",Black:"#1a1a1a"};
+const FAMILY_COLOR={Red:"#c8102e",Orange:"#f07a1a",Yellow:"#f2c744",Green:"#3f8e43",Teal:"#2aa7a0",Blue:"#1f4ea3",Purple:"#6a4bb5",Pink:"#e89ac0",Brown:"#7a5236",White:"#ffffff",Gray:"#9a9a9a",Black:"#1a1a1a"};
 function familyPopHTML(f,items,n){
   items=items.slice().sort((a,b)=>b.qty-a.qty||a.color.localeCompare(b.color));
   return `<div class="pop-top"><div class="pop-dot" style="background:${FAMILY_COLOR[f]}"></div><div><div class="pop-title">${f}</div><div class="pop-fam">${n} roll${n===1?"":"s"} \u00b7 ${items.length} color${items.length===1?"":"s"}</div></div></div>

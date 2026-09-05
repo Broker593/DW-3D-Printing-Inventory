@@ -153,7 +153,7 @@
     <div class="spend-hd"><div class="lbl">Spent, by category<small id="spendSub"></small></div><b id="tSpent">$0</b></div>
     <div class="sbar" id="sbar"></div>
     <div class="slegend" id="slegend"></div>
-    <div class="src">Sources: Bambu Lab order records (three accounts), Amazon and AliExpress order histories. Bambu amounts include Pennsylvania sales tax; Amazon and AliExpress are item prices before tax. Not included: the ~June 1 printing-account order (total unknown), pre-2026 magnets, AliExpress pocket magnets.</div>
+    <div class="src">Sources: Bambu Lab order records (three accounts), Amazon and AliExpress order histories. Bambu filament figures include Pennsylvania sales tax; Amazon and AliExpress are item prices before tax. Awaiting item split, not yet counted: three Bambu orders that mixed printers with an AMS 2 Pro, hotends, a cutting kit, and 21 rolls; the printing-account order; pre-2026 magnets.</div>
   </div>
 </div>
 <div class="feat-h"><span>Most stocked</span><span>Top colors by rolls on hand</span></div>
@@ -664,20 +664,18 @@ function attachPop(row,d){
 // ---- spend by category (USD) -------------------------------------------
 // [label, amount, color, note, pending?]
 const SPEND=[
- ["Printers, AMS & parts \u2014 3 mixed Bambu orders",4154.71,"",  "Apr 12, Jul 30, Aug 3 \u2014 item split pending",true],
  ["Filament",1572.60,"#c8102e","Bambu $1,179 \u00b7 Amazon $343 \u00b7 AliExpress $50"],
- ["Hotends",139.98,"#111","Aug 31, 2 \u00d7 H2C High Flow"],
- ["AMS HT",139.00,"#555","Aug 31"],
- ["Magnets",99.93,"#8a8a8a","Amazon, 2026 orders"],
- ["Sales tax \u2014 Aug 31 order",34.89,"#bdbdbd",""],
- ["LED strips & accessories",17.79,"#e0dcd3","Aug 31"],
+ ["Hotends",139.98,"#111","2 \u00d7 H2C High Flow"],
+ ["AMS units",139.00,"#555","AMS HT"],
+ ["Magnets",99.93,"#8a8a8a","Amazon"],
+ ["Build plates",32.85,"#bdbdbd","CryoGrip Pro for H2C"],
 ];
 const SPEND_TOTAL=SPEND.reduce((a,s)=>a+s[1],0);
 const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
 const fmt$2=n=>"$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 function renderSpend(){
   $("#tSpent").textContent=fmt$(SPEND_TOTAL);
-  $("#spendSub").textContent="Verified order records, Apr\u2013Aug 2026";
+  $("#spendSub").textContent="Supplies only \u2014 printers, LEDs and small accessories excluded";
   $("#sbar").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<i class="${pend?"pend":""}" style="flex:${v};${pend?"":"background:"+c}" title="${k}: ${fmt$2(v)}"></i>`).join("");
   $("#slegend").innerHTML=SPEND.map(([k,v,c,n,pend])=>`<div><i class="${pend?"pend":""}" style="${pend?"":"background:"+c}"></i><span class="k">${k}${n?` <em>\u00b7 ${n}</em>`:""}</span><span class="v">${fmt$2(v)}</span><span class="pc">${Math.round(100*v/SPEND_TOTAL)}%</span></div>`).join("");
 }

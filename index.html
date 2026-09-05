@@ -88,6 +88,8 @@
     .types span{font-size:12px}.types span.o{font-size:8px}
     .row{gap:8px}.thead{gap:8px}.thead .stepper-ghost{width:90px}
   }
+  .famlabel{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red);padding:9px 12px 3px;background:var(--fill)}
+  .famlabel+.row::before{display:none}
   .stepper{display:flex;align-items:center;border:1px solid var(--rule);flex:none;height:30px}
   .stepper button{width:30px;height:28px;border:none;background:none;color:var(--ink);font:inherit;font-size:18px;line-height:1;cursor:pointer}
   .stepper button:active{background:var(--fill)}.stepper .v{min-width:26px;text-align:center;font-family:Anton,Impact,sans-serif;font-size:16px}.stepper .v.zero{color:var(--muted)}
@@ -361,6 +363,22 @@ const COLS=["Basic","Matte","Silk","Marble","Wood"];
 const SECTIONS=["PLA","PETG HF","PETG Basic","PETG Translucent","Creality PETG","Overture PETG","Flashforge PETG-CF","Polymaker PET-CF","3D-Fuel PCTG","ABS","ASA","TPU 90A","TPU for AMS","Support PLA/PETG","Support PLA (New)","H2C Right Hotends (Induction)","H2C Left Hotends (Standard)"];
 const SEG={PLA:"PLA",PETG:"PETG","ABS/ASA":"Other",TPU:"Other",Support:"Other",Parts:"Parts"};
 
+const FAMILIES=["Red","Orange","Yellow","Green","Teal","Blue","Purple","Pink","Brown","White","Gray","Black"];
+function colorFamily(L,C,h){
+  if(C<.035)return L>.87?"White":L<.35?"Black":"Gray";
+  if(h>=42&&h<115){                                   // orange-yellow arc
+    if(L<.55||(C<.11&&L<.80))return "Brown";          // dark, or muted and not light: brown / tan
+    if(L>=.85&&C<.06)return "White";                  // pale cream / beige
+  }
+  if(h>=335||h<15)return "Pink";
+  if(h<42)return "Red";
+  if(h<75)return "Orange";
+  if(h<115)return "Yellow";
+  if(h<170)return "Green";
+  if(h<205)return "Teal";
+  if(h<285)return "Blue";
+  return "Purple";
+}
 DATA.forEach(d=>{
   d.id=(d.code||d.fam+"-"+d.color)+"-"+d.fmt; d.kg=(d.kg===undefined?1:d.kg); d.base=d.qty;
   d.type=TYPE_OF[d.fam]||null; d.brand=BRAND_OF[d.fam]||"Bambu Lab"; d.sec=d.grp==="PLA"?"PLA":d.fam;
@@ -370,6 +388,7 @@ DATA.forEach(d=>{
   const l_=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b),m_=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b),s_=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
   const L=.2104542553*l_+.7936177850*m_-.0040720468*s_,A=1.9779984951*l_-2.4285922050*m_+.4505937099*s_,B=.0259040371*l_+.7827717662*m_-.8086757660*s_;
   d.L=L;d.C=Math.hypot(A,B);let h=Math.atan2(B,A)*180/Math.PI;if(h<0)h+=360;d.h=h;
+  d.family=colorFamily(L,d.C,h);
 });
 
 const KEY="filament-inventory-counts-v1";
@@ -394,12 +413,8 @@ function cmp(a,b){
   if(sort==="name")return a.color.localeCompare(b.color);
   if(sort==="bought")return (b.base-a.base)||(b.qty-a.qty)||a.color.localeCompare(b.color);
   if(sort==="hue"){
-    const NEUTRAL=.035;                       // OKLCH chroma below this reads as gray/white/black
-    const na=a.C<NEUTRAL,nb=b.C<NEUTRAL; if(na!==nb)return na?1:-1;
-    if(na)return b.L-a.L;                     // neutrals: white -> black
-    const wheel=h=>((h-20)%360+360)%360;      // start the wheel at red (~20deg in OKLCH), end at pink
-    const ha=Math.round(wheel(a.h)/15),hb=Math.round(wheel(b.h)/15);   // 15deg bands so near-identical hues group
-    return (ha-hb)||(b.L-a.L);
+    const fa=FAMILIES.indexOf(a.family),fb=FAMILIES.indexOf(b.family);
+    return (fa-fb)||(b.L-a.L)||a.color.localeCompare(b.color);
   }
   const ta=TYPE_ORDER.indexOf(a.type),tb=TYPE_ORDER.indexOf(b.type);
   return (ta-tb)||(b.qty-a.qty)||a.color.localeCompare(b.color);
@@ -564,7 +579,12 @@ function renderList(){
       th.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;typeFilter=typeFilter===b.dataset.t?null:b.dataset.t;renderList();});
       card.appendChild(th);
     }
+    let lastFam=null;
     items.forEach(d=>{
+      if(sort==="hue"&&d.grp!=="Parts"&&d.family!==lastFam){
+        lastFam=d.family;
+        const div=document.createElement("div");div.className="famlabel";div.textContent=d.family;card.appendChild(div);
+      }
       const row=document.createElement("div");row.className="row"+(isCat(d)?" cat":(d.qty===0?" out":""));
       row.innerHTML=`<div class="dot" style="background:${d.hex}"></div>
         <div class="meta"><div class="name">${d.color}</div><div class="sub">${subline(d)}</div></div>

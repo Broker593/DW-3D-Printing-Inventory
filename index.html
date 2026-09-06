@@ -8,6 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
+<meta name="build" content="1788731431">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -798,6 +799,17 @@ $("#csv").addEventListener("click",()=>{
   const blob=new Blob([lines.join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="filament-inventory.csv";a.click();URL.revokeObjectURL(a.href);
 });
 renderAll();
+
+// self-refresh for home-screen / cached copies: reload if the live file has a newer build stamp
+(function(){
+  const mine=document.querySelector('meta[name="build"]').content;let checking=false;
+  async function check(){if(checking)return;checking=true;try{
+    const r=await fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"});const html=await r.text();
+    const m=html.match(/name="build" content="(\d+)"/);if(m&&m[1]!==mine)location.reload();
+  }catch(e){}checking=false;}
+  check();document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")check();});
+  window.addEventListener("pageshow",e=>{if(e.persisted)check();});
+})();
 </script>
 </body>
 </html>

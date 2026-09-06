@@ -161,12 +161,6 @@
   .count.zero{color:var(--muted)}
   .toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0 8px;border-bottom:1px solid var(--rule);margin-bottom:22px}
   button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
-  details.notes{margin-top:22px;border-top:1px solid var(--rule);padding-top:10px;font-size:12px;color:var(--muted);line-height:1.6}
-  details.notes summary{cursor:pointer;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--ink);list-style:none}
-  details.notes summary::-webkit-details-marker{display:none}
-  details.notes summary::after{content:" +";color:var(--red)}
-  details[open].notes summary::after{content:" \2212"}
-  details.notes p{margin:8px 0 0}
 </style>
 </head>
 <body>
@@ -199,12 +193,6 @@
 </div>
 <div class="feat-h"><span>Most stocked</span><span>Every color with three or more rolls · same color grouped across brands</span></div>
 <div class="feat" id="feat"></div>
-<details class="notes"><summary>Data notes</summary>
-  <p>Sources: Bambu Lab order records (both accounts), Amazon and Ali order histories. Counts are as purchased; DW updates the file as rolls are used.</p>
-  <p>Spend is supplies only, before tax. Bambu filament figures had the 8% PA + Philadelphia rate backed out; Amazon and Ali are item prices. Awaiting item split, not yet counted: three Bambu orders that mixed printers with the AMS 2 Pro, hotends, a cutting kit, and 21 rolls; the printing-account order; pre-2026 magnets. The P2S and its combo AMS were sold and are excluded.</p>
-  <p>Bambu swatches are the store’s official colors, sampled per SKU. Third-party swatches are approximations. Support filaments and the Polymaker PET-CF are 0.5 kg rolls; everything else is 1 kg net.</p>
-  <p>Magnet counts use the manufacturer’s stated per-size split for assorted packs. Not charted: a 2021 FINDMAG 300-pack with no listed size, and magnetic hardware (hooks, clips, sculpture toys).</p>
-</details>
 </div>
 <div class="view" id="view-inventory">
 <div class="toolbar">
@@ -625,7 +613,7 @@ function renderMagnets(){
   });
   host.appendChild(sec3);
   const note=document.createElement("div");note.className="note";
-  note.innerHTML="Purchased orders only. See Data notes on the Overview tab.";
+  note.innerHTML="Purchased orders only.";
   host.appendChild(note);
 }
 function renderList(){

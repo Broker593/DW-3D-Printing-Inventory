@@ -209,7 +209,6 @@
 <div id="list"></div>
 <div class="pop" id="pop" role="tooltip"></div>
 <div class="quiet">
-  <button id="toggleCat">Show catalog colors</button>
   <button id="csv">Export CSV</button>
 </div>
 </div>
@@ -448,7 +447,7 @@ DATA.forEach(d=>{
 });
 
 
-let q="",seg="All",showCat=false,sort="type",typeFilter=null;
+let q="",seg="All",showCat=true,sort="type",typeFilter=null;
 const $=s=>document.querySelector(s);
 const isCat=d=>d.base===0&&d.qty===0;
 
@@ -620,7 +619,6 @@ function renderList(){
   hidePop();
   document.querySelector(".sortrow").style.display=seg==="Magnets"?"none":"";
   $("#q").style.display=seg==="Magnets"?"none":"";
-  $("#toggleCat").style.display=seg==="Magnets"?"none":"";
   if(seg==="Magnets"){renderMagnets();return;}
   const host=$("#list");host.innerHTML="";
   const rows=visible();
@@ -790,7 +788,6 @@ document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.cl
 $("#q").addEventListener("input",e=>{q=e.target.value;renderList();});
 $("#sort").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;sort=b.dataset.s;document.querySelectorAll("#sort button").forEach(x=>x.classList.toggle("on",x===b));renderList();});
 $("#segment").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;seg=b.dataset.g;document.querySelectorAll("#segment button").forEach(x=>x.classList.toggle("on",x===b));renderList();});
-$("#toggleCat").addEventListener("click",e=>{showCat=!showCat;e.target.textContent=showCat?"Hide catalog colors":"Show catalog colors";renderList();});
 $("#csv").addEventListener("click",()=>{
   const lines=["Section,Material,Type,Brand,Color,Code,Format,Roll kg,Purchased,On hand"];
   DATA.forEach(d=>lines.push(`${d.sec},"${d.fam}",${d.type||""},${d.brand},"${d.color}",${d.code},${d.fmt},${d.kg},${d.base},${d.qty}`));

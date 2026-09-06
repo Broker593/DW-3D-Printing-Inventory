@@ -483,7 +483,11 @@ function renderTotals(){
   $("#fRolls").textContent=`${refills} refills, ${rolls-refills} spools`;
   $("#fKg").textContent=`${Math.round(100*pla/rolls)}% PLA by roll`;
   $("#fColors").textContent=`${fams} lines, ${brands} brands`;
-  $("#fHotends").textContent="8 shipped with H2C, 9 bought";
+  const hot=DATA.filter(d=>d.grp==="Parts"&&d.qty>0);
+  const sizes=[...new Set(hot.map(d=>parseFloat(d.color)))].filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+  const steels=[...new Set(hot.map(d=>/stainless/i.test(d.color)?"stainless":/hardened/i.test(d.color)?"hardened":null).filter(Boolean))];
+  const induction=hot.filter(d=>/Induction/.test(d.fam)).reduce((a,d)=>a+d.qty,0);
+  $("#fHotends").textContent=`${sizes[0]}\u2013${sizes[sizes.length-1]} mm nozzles, ${sizes.length} sizes \u00b7 ${induction} induction-heated`;
   renderSpend();
 }
 function subline(d){

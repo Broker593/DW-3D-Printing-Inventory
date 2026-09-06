@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DW’s 3D Print Supply Inventory</title>
+<meta name="description" content="Every roll of filament, hotend, and magnet on Dave Wilkes’s 3D-printing shelf — catalogued from Bambu, Amazon, and Ali orders, with spend and color analysis.">
+<meta property="og:title" content="DW’s 3D Print Supply Inventory">
+<meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -24,7 +29,7 @@
 
   /* by the numbers — infographic */
   .info{margin:16px 0 24px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 0 16px}
-  .info .kick{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:10px}
+  .info .kick{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);font-weight:700;margin-bottom:10px}
   .figs{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:18px}
   .figs div{padding:2px 14px 4px 0;border-right:1px solid var(--hair);margin-right:14px}
   .figs div:last-child{border-right:none;margin-right:0}
@@ -51,7 +56,6 @@
   .cpk{border-top:1px solid var(--hair);padding-top:12px;margin-bottom:16px}
   .cpk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
   .cpk-grid div{border-left:3px solid var(--ink);padding-left:10px}
-  .cpk-grid div:first-child{border-color:var(--red)}
   .cpk-grid b{display:block;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(26px,4.6vw,38px);line-height:1}
   .cpk-grid span{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:5px}
   .cpk-grid small{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}
@@ -60,7 +64,6 @@
   .dotplot .tick{position:absolute;top:19px;width:1px;height:7px;background:var(--rule)}
   .dotplot .tl{position:absolute;top:29px;font-size:10px;color:var(--muted);transform:translateX(-50%)}
   .dotplot .dot{position:absolute;top:22px;width:12px;height:12px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%);border:2px solid var(--bg)}
-  .dotplot .dot.hi{background:var(--red)}
   .dotplot .dl{position:absolute;top:0;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transform:translateX(-50%);white-space:nowrap}
   .fam-list{max-height:260px;overflow:auto;font-size:13px}
   .fam-list div{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px dotted var(--hair)}
@@ -79,8 +82,8 @@
   .feat .n{font-family:Anton,Impact,sans-serif;font-size:14px;margin-bottom:4px}
   .feat .ph{width:100%;max-width:56px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);border-bottom:2px solid var(--rule)}
   .feat .cap{text-align:center;padding-top:6px;width:100%}
-  .feat .cap b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:11px;line-height:1.15;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .feat .cap span{display:block;font-size:8.5px;color:var(--red);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .feat .cap b{display:block;font-family:Inter,-apple-system,sans-serif;font-size:11px;line-height:1.15;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .feat .cap span{display:block;font-size:8.5px;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   @media (max-width:560px){.feat{gap:5px;min-height:160px}.feat .n{font-size:12px}.feat .cap b{font-size:9px}.feat .cap span{font-size:7.5px}}
   /* controls */
   .search{width:100%;display:block;margin-bottom:10px;height:38px;background:var(--card);border:1px solid var(--rule);border-radius:0;padding:0 12px;font:inherit;font-size:15px;color:var(--ink);outline:none;-webkit-appearance:none;min-width:0}
@@ -106,35 +109,33 @@
   @media (prefers-color-scheme:dark){.dot{box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}}
   .meta{flex:1;min-width:0;cursor:default}
   @media (hover:none){.meta{cursor:pointer}}
-  .name{font-family:"Playfair Display",Georgia,serif;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .name{font-family:Inter,-apple-system,sans-serif;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .sub{font-size:12px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .row.cat .name{color:var(--muted);font-weight:400}.row.cat .dot{opacity:.45}.row.out .name{color:var(--muted)}
   .types{display:grid;grid-template-columns:repeat(5,38px) 62px;flex:none;align-items:center}
   .types span{text-align:center;font-size:14px;color:var(--check);line-height:1}
-  .types span.o{font-size:10px;color:var(--red);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .types span.o{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .thead{display:flex;align-items:center;gap:12px;padding:6px 12px;background:var(--fill)}
   .thead .lead{flex:1;min-width:0}
   .thead .types button{border:none;background:none;font:inherit;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   .thead .types button.on{color:var(--red)}
-  .thead .stepper-ghost{width:94px;flex:none}
+  .thead .stepper-ghost{width:34px;flex:none}
   @media (max-width:520px){
     .types{grid-template-columns:repeat(5,24px) 44px}
     .thead{align-items:flex-end;padding-top:10px}.thead .types{align-items:end}
     .thead .types button{font-size:9px;writing-mode:vertical-rl;transform:rotate(180deg);height:58px;line-height:1;padding:0;overflow:visible;text-overflow:clip;justify-self:center}
     .types span{font-size:12px}.types span.o{font-size:8px}
-    .row{gap:8px}.thead{gap:8px}.thead .stepper-ghost{width:90px}
+    .row{gap:8px}.thead{gap:8px}.thead .stepper-ghost{width:30px}
   }
-  .famlabel{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red);padding:9px 12px 3px;background:var(--fill)}
+  .famlabel{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:9px 12px 3px;background:var(--fill)}
   .famlabel+.row::before{display:none}
-  .stepper{display:flex;align-items:center;border:1px solid var(--rule);flex:none;height:30px}
-  .stepper button{width:30px;height:28px;border:none;background:none;color:var(--ink);font:inherit;font-size:18px;line-height:1;cursor:pointer}
-  .stepper button:active{background:var(--fill)}.stepper .v{min-width:26px;text-align:center;font-family:Anton,Impact,sans-serif;font-size:16px}.stepper .v.zero{color:var(--muted)}
   .pop{position:absolute;z-index:30;width:292px;background:var(--card);border:1px solid var(--rule);padding:14px 16px;box-shadow:8px 8px 0 var(--red);display:none;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
   .pop.show{display:block;opacity:1;transform:none}
   .pop-top{display:flex;gap:14px;align-items:center;margin-bottom:12px}
   .pop-img{width:64px;height:64px;object-fit:cover;flex:none;background:var(--fill);border:1px solid var(--hair)}
   .pop-dot{width:64px;height:64px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
-  .pop-title{font-family:"Playfair Display",Georgia,serif;font-size:18px;font-weight:800;line-height:1.1}.pop-fam{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-top:3px}
+  .pop-title{font-family:"Playfair Display",Georgia,serif;font-size:18px;font-weight:800;line-height:1.1}
+  .pop-fam{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:3px}
   .pop-grid{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:13px}.pop-grid dt{color:var(--muted)}.pop-grid dd{font-weight:600;text-align:right}
   .pop a{display:block;margin-top:12px;text-align:center;background:var(--ink);color:var(--bg);text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:9px}
   @media (prefers-color-scheme:dark){.pop a{color:#111}}
@@ -151,15 +152,32 @@
   .quiet button{border:none;background:none;font:inherit;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);cursor:pointer}
   .empty{padding:32px 16px;text-align:center;color:var(--muted);font-size:15px}
   .note{font-size:11px;color:var(--muted);text-align:center;margin-top:22px;line-height:1.6;border-top:1px solid var(--rule);padding-top:12px}
+
+  .tabs{display:flex;border-bottom:2px solid var(--rule);margin:0 0 18px}
+  .tabs button{border:none;background:none;font:inherit;font-family:Anton,Impact,sans-serif;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 18px 8px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+  .tabs button.on{color:var(--ink);border-bottom-color:var(--red)}
+  .view{display:none}.view.on{display:block}
+  .count{font-family:Anton,Impact,sans-serif;font-size:17px;min-width:34px;text-align:right;flex:none;letter-spacing:.02em}
+  .count.zero{color:var(--muted)}
+  .toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0 8px;border-bottom:1px solid var(--rule);margin-bottom:22px}
+  button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  details.notes{margin-top:22px;border-top:1px solid var(--rule);padding-top:10px;font-size:12px;color:var(--muted);line-height:1.6}
+  details.notes summary{cursor:pointer;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--ink);list-style:none}
+  details.notes summary::-webkit-details-marker{display:none}
+  details.notes summary::after{content:" +";color:var(--red)}
+  details[open].notes summary::after{content:" \2212"}
+  details.notes p{margin:8px 0 0}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="mast">
-  <div class="top"><span><b>Vol. 1 &middot; No. 1</b> &nbsp;&middot;&nbsp; September 2026</span><span>Fishtown, Philadelphia</span></div>
+  <div class="top"><span><b>Vol. 1 &middot; No. 1</b> &nbsp;&middot;&nbsp; September 2026</span><span>Fishtown, Philadelphia &middot; Updated Sept 5, 2026</span></div>
   <h1>DW&rsquo;s 3D Print <span>Supply</span> Inventory</h1>
   <div class="dek">Every roll, hotend, and magnet on the shelf &mdash; catalogued from Bambu, Amazon, and Ali orders.</div>
 </div>
+<div class="tabs" role="tablist"><button class="on" data-v="overview" role="tab">Overview</button><button data-v="inventory" role="tab">Inventory</button></div>
+<div class="view on" id="view-overview">
 <div class="info">
   <div class="kick">By the numbers</div>
   <div class="figs">
@@ -177,7 +195,6 @@
     <div class="spend-hd"><div class="lbl">Spent, by category<small id="spendSub"></small></div><b id="tSpent">$0</b></div>
     <div class="sbar" id="sbar"></div>
     <div class="slegend" id="slegend"></div>
-    <div class="src">Sources: Bambu Lab order records (both accounts), Amazon and Ali order histories. Awaiting item split, not yet counted: three Bambu orders that mixed printers with the AMS 2 Pro, hotends, a cutting kit, and 21 rolls; the printing-account order; pre-2026 magnets. The P2S and its combo AMS were sold and are excluded.</div>
   </div>
   <div class="shelf" style="margin-bottom:0">
     <div class="spend-hd"><div class="lbl">The shelf, by color<small>Rolls on hand, grouped the way the Hue sort groups them</small></div></div>
@@ -187,6 +204,15 @@
 </div>
 <div class="feat-h"><span>Most stocked</span><span>Every color with three or more rolls · same color grouped across brands</span></div>
 <div class="feat" id="feat"></div>
+<details class="notes"><summary>Data notes</summary>
+  <p>Sources: Bambu Lab order records (both accounts), Amazon and Ali order histories. Counts are as purchased; DW updates the file as rolls are used.</p>
+  <p>Spend is supplies only, before tax, with tax shown as its own line. Bambu filament figures had the 8% PA + Philadelphia rate backed out; Amazon and Ali are item prices. Awaiting item split, not yet counted: three Bambu orders that mixed printers with the AMS 2 Pro, hotends, a cutting kit, and 21 rolls; the printing-account order; pre-2026 magnets. The P2S and its combo AMS were sold and are excluded.</p>
+  <p>Bambu swatches are the store’s official colors, sampled per SKU. Third-party swatches are approximations. Support filaments and the Polymaker PET-CF are 0.5 kg rolls; everything else is 1 kg net.</p>
+  <p>Magnet counts use the manufacturer’s stated per-size split for assorted packs. Not charted: a 2021 FINDMAG 300-pack with no listed size, and magnetic hardware (hooks, clips, sculpture toys).</p>
+</details>
+</div>
+<div class="view" id="view-inventory">
+<div class="toolbar">
 <input class="search" id="q" type="search" placeholder="Search" autocomplete="off">
 <div class="sortrow"><span>Sort</span>
   <div class="segment mini" id="sort">
@@ -196,14 +222,14 @@
 <div class="segment" id="segment">
   <button data-g="All" class="on">All</button><button data-g="PLA">PLA</button><button data-g="PETG">PETG</button><button data-g="Other">Other</button><button data-g="Parts">Parts</button><button data-g="Magnets">Magnets</button>
 </div>
+</div>
 <div id="list"></div>
 <div class="pop" id="pop" role="tooltip"></div>
 <div class="quiet">
   <button id="toggleCat">Show catalog colors</button>
   <button id="csv">Export CSV</button>
-  <button id="reset">Reset counts</button>
 </div>
-<div class="note">Bambu store (3 accounts), Amazon, and Ali orders, Apr&ndash;Aug 2026. Counts save in this browser. Tap a name for details.</div>
+</div>
 </div>
 
 <script>
@@ -438,10 +464,6 @@ DATA.forEach(d=>{
   d.family=colorFamily(L,d.C,h);
 });
 
-const KEY="filament-inventory-counts-v1";
-function loadSaved(){try{const s=localStorage.getItem(KEY);if(!s)return;const m=JSON.parse(s);DATA.forEach(d=>{if(m[d.id]!=null)d.qty=m[d.id];});}catch(e){}}
-function save(){try{const m={};DATA.forEach(d=>m[d.id]=d.qty);localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
-loadSaved();
 
 let q="",seg="All",showCat=false,sort="type",typeFilter=null;
 const $=s=>document.querySelector(s);
@@ -608,7 +630,7 @@ function renderMagnets(){
   });
   host.appendChild(sec3);
   const note=document.createElement("div");note.className="note";
-  note.innerHTML="Purchased orders only \u2014 cart and saved-for-later items are excluded. Assorted-pack counts use the manufacturer\u2019s stated per-size split. Not charted: FINDMAG 300-pc fridge pack (2021, size unlisted) and decorative/hardware magnets (hooks, clips, sculpture toys).";
+  note.innerHTML="Purchased orders only. See Data notes on the Overview tab.";
   host.appendChild(note);
 }
 function renderList(){
@@ -651,11 +673,7 @@ function renderList(){
       row.innerHTML=`<div class="dot" style="background:${d.hex}"></div>
         <div class="meta"><div class="name">${d.color}</div><div class="sub">${subline(d)}</div></div>
         ${sname==="PLA"?`<div class="types">${typeCells(d)}</div>`:""}
-        <div class="stepper"><button aria-label="decrease">&minus;</button><div class="v ${d.qty===0?"zero":""}">${d.qty}</div><button aria-label="increase">+</button></div>`;
-      const btns=row.querySelectorAll(".stepper button");
-      const parts=d.items||[d];
-      btns[0].onclick=()=>{const src=parts.filter(x=>x.qty>0).sort((a,b)=>(a.fmt==="Refill"?0:1)-(b.fmt==="Refill"?0:1))[0];if(src){src.qty--;save();renderAll();}};
-      btns[1].onclick=()=>{const dst=parts.find(x=>x.fmt==="Spool")||parts[0];dst.qty++;save();renderAll();};
+        <div class="count ${d.qty===0?"zero":""}">${d.qty}</div>`;
       attachPop(row,d);card.appendChild(row);
     });
     host.appendChild(sec);
@@ -786,11 +804,11 @@ function renderCover(){
 }
 function renderAll(){renderTotals();renderCover();renderList();}
 
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="view-"+b.dataset.v));hidePop();window.scrollTo({top:0});});
 $("#q").addEventListener("input",e=>{q=e.target.value;renderList();});
 $("#sort").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;sort=b.dataset.s;document.querySelectorAll("#sort button").forEach(x=>x.classList.toggle("on",x===b));renderList();});
 $("#segment").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;seg=b.dataset.g;document.querySelectorAll("#segment button").forEach(x=>x.classList.toggle("on",x===b));renderList();});
 $("#toggleCat").addEventListener("click",e=>{showCat=!showCat;e.target.textContent=showCat?"Hide catalog colors":"Show catalog colors";renderList();});
-$("#reset").addEventListener("click",()=>{if(!confirm("Reset all counts to as-purchased quantities?"))return;DATA.forEach(d=>d.qty=d.base);save();renderAll();});
 $("#csv").addEventListener("click",()=>{
   const lines=["Section,Material,Type,Brand,Color,Code,Format,Roll kg,Purchased,On hand"];
   DATA.forEach(d=>lines.push(`${d.sec},"${d.fam}",${d.type||""},${d.brand},"${d.color}",${d.code},${d.fmt},${d.kg},${d.base},${d.qty}`));

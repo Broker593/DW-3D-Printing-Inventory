@@ -8,7 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
-<meta name="build" content="1789325356">
+<meta name="build" content="1789325684">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -162,6 +162,39 @@
   .count.zero{color:var(--muted)}
   .toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0 8px;border-bottom:1px solid var(--rule);margin-bottom:22px}
   button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+  .lede{font-family:"Playfair Display",Georgia,serif;font-size:16px;line-height:1.5;margin:6px 0 18px;max-width:64ch}
+  .plates{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .plate{background:var(--card);border:1px solid var(--hair);display:flex;flex-direction:column}
+  .plate .swatch{height:74px;position:relative;border-bottom:1px solid var(--hair)}
+  .plate .swatch.tex{background:#3a3d42;background-image:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1.2px);background-size:5px 5px}
+  .plate .swatch.smooth{background:linear-gradient(135deg,#4d5159,#2a2d33)}
+  .plate .swatch.tack{background:#cfd6d0}
+  .plate .swatch.dual{background:linear-gradient(90deg,#3a3d42 50%,#2a2d33 50%);background-image:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1.2px),linear-gradient(90deg,transparent 50%,#2a2d33 50%);background-size:5px 5px,100% 100%}
+  .plate .swatch.frost{background:#4fb4ec;background-image:radial-gradient(rgba(255,255,255,.35) 1px,transparent 1.2px);background-size:4px 4px}
+  .plate .swatch.glacier{background:linear-gradient(135deg,#8ee0e6,#5bc9d3)}
+  .plate .tag{position:absolute;top:8px;left:8px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;background:var(--ink);color:var(--bg);padding:3px 6px}
+  .plate .tag.own{background:var(--red)}
+  .plate .body{padding:12px 14px 14px}
+  .plate h3{font-family:"Playfair Display",Georgia,serif;font-size:17px;font-weight:700;line-height:1.15;margin-bottom:2px}
+  .plate .maker{font-size:11px;color:var(--muted);margin-bottom:8px}
+  .plate .best{font-size:13px;line-height:1.45;margin-bottom:10px}
+  .plate dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12px}
+  .plate dt{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted);padding-top:1px}
+  .plate dd{color:var(--ink);line-height:1.4}
+  .plate .warn{margin-top:8px;font-size:11.5px;color:var(--muted);border-left:2px solid var(--rule);padding-left:8px;line-height:1.4}
+  .matrix-wrap{overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .matrix{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
+  .matrix th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;text-align:left;padding:8px 6px;border-bottom:1px solid var(--rule);white-space:nowrap}
+  .matrix th:not(:first-child),.matrix td:not(:first-child){text-align:center}
+  .matrix td{padding:7px 6px;border-bottom:1px dotted var(--hair);white-space:nowrap}
+  .matrix td:first-child{font-weight:600}
+  .matrix .g{color:var(--muted);font-weight:700}
+  .matrix .n{color:var(--muted)}
+  .matrix .y{font-weight:700}
+  .matrix small{display:block;font-size:10px;color:var(--muted);font-weight:400}
+  .fine{font-size:11px;color:var(--muted);font-style:italic;margin-top:10px;line-height:1.5}
+  @media (max-width:560px){.plates{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -171,7 +204,7 @@
   <h1>DW&rsquo;s 3D Print <span>Supply</span> Inventory</h1>
   <div class="dek">Every roll, hotend, and magnet on the shelf &mdash; catalogued from Bambu, Amazon, and Ali orders.</div>
 </div>
-<div class="tabs" role="tablist"><button class="on" data-v="overview" role="tab">Overview</button><button data-v="inventory" role="tab">Inventory</button></div>
+<div class="tabs" role="tablist"><button class="on" data-v="overview" role="tab">Overview</button><button data-v="inventory" role="tab">Inventory</button><button data-v="plates" role="tab">Plates</button></div>
 <div class="view on" id="view-overview">
 <div class="info">
   <div class="kick">By the numbers</div>
@@ -194,6 +227,14 @@
 </div>
 <div class="feat-h"><span>Most stocked</span><span>Every color with three or more rolls · same color grouped across brands</span></div>
 <div class="feat" id="feat"></div>
+</div>
+<div class="view" id="view-plates">
+  <div class="section-h"><h2>Build plates for the H2C</h2><span>Which surface for which job</span></div>
+  <p class="lede">The H2C ships with a Textured PEI plate. Everything else is optional \u2014 each surface trades grip for finish, temperature range, or care. Bed temperatures below are first-layer starting points, not limits.</p>
+  <div class="plates" id="plates"></div>
+  <div class="section-h" style="margin-top:28px"><h2>Material guide</h2><span>\u2713 prints direct &nbsp;\u00b7&nbsp; G needs glue stick &nbsp;\u00b7&nbsp; \u2013 not recommended</span></div>
+  <div class="matrix-wrap"><table class="matrix" id="matrix"></table></div>
+  <p class="fine">Bambu plate figures from Bambu Lab product pages and slicer defaults; CryoGrip figures from BIGTREETECH\u2019s spec sheet. Always confirm against the filament\u2019s own bed-temperature range.</p>
 </div>
 <div class="view" id="view-inventory">
 <div class="toolbar">
@@ -800,6 +841,45 @@ $("#csv").addEventListener("click",()=>{
   const blob=new Blob([lines.join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="filament-inventory.csv";a.click();URL.revokeObjectURL(a.href);
 });
 renderAll();
+
+// ---- build plates explainer ---------------------------------------------
+const PLATES=[
+ {name:"Textured PEI Plate",maker:"Bambu Lab \u00b7 ships with the H2C",cls:"tex",tag:"Ships with H2C",own:true,
+  best:"The all-rounder. Grippy powder-coated PEI that handles nearly everything and self-releases once it cools below about 35\u00b0C.",
+  finish:"Rough matte bottom",temps:"PLA 55\u201365 \u00b7 PETG 70\u201380 \u00b7 ABS/ASA 90\u2013100",materials:"PLA, PETG, TPU, ABS, ASA, PA, PC",clean:"Dish soap + warm water; IPA occasionally",
+  warn:"Fine text or logos on the first layer come out soft. Tiny parts can pop off \u2014 use a brim."},
+ {name:"Smooth PEI Plate",maker:"Bambu Lab",cls:"smooth",tag:"Optional",
+  best:"For a glass-smooth, satin-matte bottom and better Z accuracy on parts that need to fit together.",
+  finish:"Smooth matte bottom",temps:"PLA 55\u201365 \u00b7 PETG 70\u201380 (glue) \u00b7 ABS 90\u2013100 (glue)",materials:"PLA direct; glue for PETG, ABS, PA, PC",clean:"IPA on a paper towel",
+  warn:"PETG bonds so hard it can tear the sheet \u2014 glue stick is a release layer here, not an adhesive. The sheet is bonded and can\u2019t be replaced."},
+ {name:"Cool Plate SuperTack",maker:"Bambu Lab",cls:"tack",tag:"Optional",
+  best:"Prints PLA at a cooler bed (about 45\u00b0C), which cuts elephant-foot and warp on tall PLA parts.",
+  finish:"Smooth matte bottom",temps:"PLA 35\u201345 \u00b7 PETG 50\u201360 (glue) \u00b7 TPU 30\u201340",materials:"PLA, TPU direct; glue for PETG",clean:"Water only \u2014 no IPA",
+  warn:"Not for ABS, ASA, PA or PC. Let it cool fully before removing PLA or the surface can tear."},
+ {name:"Dual-Texture PEI Plate",maker:"Bambu Lab",cls:"dual",tag:"Optional",
+  best:"Textured PEI on one face, smooth PEI on the other. One plate, both finishes \u2014 flip it for the job.",
+  finish:"Rough or smooth, per side",temps:"Same as each surface above",materials:"Same as each surface above",clean:"Soap + water (textured); IPA (smooth)",
+  warn:"Whichever side is down is the one you need to select in the slicer, or the first layer will be wrong."},
+ {name:"Panda CryoGrip Pro \u2014 Frostbite",maker:"BIGTREETECH",cls:"frost",tag:"Owned",own:true,
+  best:"Maximum grip for PLA and PETG at very low bed temperatures \u2014 near room temperature for PLA. Grip index 10.",
+  finish:"Rough texture",temps:"PLA 30\u201350 \u00b7 PETG 50\u201370",materials:"PLA and PETG only",clean:"Water and soap only",
+  warn:"Nothing else \u2014 not ABS, not TPU, not engineering filament. Prints release only once fully cooled."},
+ {name:"Panda CryoGrip Pro \u2014 Glacier",maker:"BIGTREETECH",cls:"glacier",tag:"Optional",
+  best:"The engineering-material version: cool-bed printing for PA, ABS and most filaments under 300\u00b0C nozzle, with a smoother bottom. Grip index 8.",
+  finish:"Smooth texture",temps:"PLA 45\u201355 \u00b7 PETG 60\u201375",materials:"All materials with nozzle temps below 300\u00b0C",clean:"Water and soap, or alcohol",
+  warn:"Less grip than Frostbite on PLA and PETG; some parts want a brim. Heat-isolating handle, AR-code sticker."},
+];
+const MATRIX={
+ rows:["PLA","PETG","TPU","ABS / ASA","PA (Nylon)","PC","PLA-CF / PETG-CF"],
+ cols:["Textured PEI","Smooth PEI","SuperTack","Frostbite","Glacier"],
+ v:[["y","y","y","y","y"],["y","g","g","y","y"],["y","y","y","n","y"],["y","g","n","n","y"],["g","g","n","n","y"],["g","g","n","n","y"],["y","g","g","y","y"]]
+};
+function renderPlates(){
+  $("#plates").innerHTML=PLATES.map(p=>`<div class="plate"><div class="swatch ${p.cls}"><span class="tag ${p.own?"own":""}">${p.tag}</span></div><div class="body"><h3>${p.name}</h3><div class="maker">${p.maker}</div><div class="best">${p.best}</div><dl><dt>Bottom</dt><dd>${p.finish}</dd><dt>Bed \u00b0C</dt><dd>${p.temps}</dd><dt>Materials</dt><dd>${p.materials}</dd><dt>Cleaning</dt><dd>${p.clean}</dd></dl><div class="warn">${p.warn}</div></div></div>`).join("");
+  const sym={y:'<span class="y">\u2713</span>',g:'<span class="g">G</span>',n:'<span class="n">\u2013</span>'};
+  $("#matrix").innerHTML=`<tr><th>Material</th>${MATRIX.cols.map(c=>`<th>${c}</th>`).join("")}</tr>`+MATRIX.rows.map((r,i)=>`<tr><td>${r}</td>${MATRIX.v[i].map(v=>`<td>${sym[v]}</td>`).join("")}</tr>`).join("");
+}
+renderPlates();
 
 // self-refresh for home-screen / cached copies: reload if the live file has a newer build stamp
 (function(){

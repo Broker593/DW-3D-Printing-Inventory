@@ -8,7 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
-<meta name="build" content="1789325991">
+<meta name="build" content="1789326049">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -209,6 +209,7 @@
   .cmp td.temps b{display:block;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:15px;letter-spacing:.02em}
   .cmp td.temps small{display:block;font-size:10px;color:var(--muted)}
   .cmp td.warn{font-size:11.5px;color:var(--muted)}
+  .cmp td.hi{background:var(--fill);box-shadow:inset 3px 0 0 var(--red);font-weight:600}
 </style>
 </head>
 <body>
@@ -244,7 +245,7 @@
 </div>
 <div class="view" id="view-plates">
   <div class="section-h"><h2>Build plates for the H2C</h2><span>Which surface for which job</span></div>
-  <p class="lede">The H2C ships with a Textured PEI plate. Everything else is optional \u2014 each surface trades grip for finish, temperature range, or care. Bed temperatures below are first-layer starting points, not limits.</p>
+  <p class="lede">The H2C ships with a Textured PEI plate. Everything else is optional \u2014 each surface trades grip for finish, temperature range, or care. The highlighted cell is each plate\u2019s reason to exist. Bed temperatures are first-layer starting points, not limits.</p>
   <div class="matrix-wrap"><table class="matrix cmp" id="plates"></table></div>
   <div class="section-h" style="margin-top:28px"><h2>Material guide</h2><span>\u2713 prints direct &nbsp;\u00b7&nbsp; G needs glue stick &nbsp;\u00b7&nbsp; \u2013 not recommended</span></div>
   <div class="matrix-wrap"><table class="matrix" id="matrix"></table></div>
@@ -858,27 +859,27 @@ renderAll();
 
 // ---- build plates explainer ---------------------------------------------
 const PLATES=[
- {name:"Textured PEI",maker:"Bambu Lab",cls:"tex",tag:"Ships with H2C",own:true,
+ {name:"Textured PEI",hi:"materials",maker:"Bambu Lab",cls:"tex",tag:"Ships with H2C",own:true,
   best:"The all-rounder. Grippy powder-coated PEI, self-releases once cooled below ~35\u00b0C.",
   finish:"Rough matte",pla:"55\u201365",petg:"70\u201380",abs:"90\u2013100",materials:"PLA, PETG, TPU, ABS, ASA, PA, PC",clean:"Dish soap + warm water; IPA occasionally",
   warn:"First-layer text comes out soft. Tiny parts can pop off \u2014 use a brim."},
- {name:"Smooth PEI",maker:"Bambu Lab",cls:"smooth",tag:"Optional",
+ {name:"Smooth PEI",hi:"finish",maker:"Bambu Lab",cls:"smooth",tag:"Optional",
   best:"Glass-smooth satin bottom and better Z accuracy for parts that need to fit together.",
   finish:"Smooth matte",pla:"55\u201365",petg:"70\u201380 \u00b7 glue",abs:"90\u2013100 \u00b7 glue",materials:"PLA direct; glue for PETG, ABS, PA, PC",clean:"IPA on a paper towel",
   warn:"PETG can tear the sheet \u2014 glue is a release layer here. Sheet is bonded, not replaceable."},
- {name:"Cool Plate SuperTack",maker:"Bambu Lab",cls:"tack",tag:"Optional",
+ {name:"Cool Plate SuperTack",hi:"pla",maker:"Bambu Lab",cls:"tack",tag:"Optional",
   best:"PLA at a cool bed (~45\u00b0C) \u2014 less elephant-foot and warp on tall PLA parts.",
   finish:"Smooth matte",pla:"35\u201345",petg:"50\u201360 \u00b7 glue",abs:"\u2014",materials:"PLA, TPU direct; glue for PETG",clean:"Water only \u2014 no IPA",
   warn:"Not for ABS, ASA, PA or PC. Cool fully before removing PLA or the surface can tear."},
- {name:"Dual-Texture PEI",maker:"Bambu Lab",cls:"dual",tag:"Optional",
+ {name:"Dual-Texture PEI",hi:"finish",maker:"Bambu Lab",cls:"dual",tag:"Optional",
   best:"Textured on one face, smooth on the other. Flip it for the job.",
   finish:"Rough or smooth, per side",pla:"55\u201365",petg:"70\u201380",abs:"90\u2013100",materials:"As each surface above",clean:"Soap + water (textured); IPA (smooth)",
   warn:"Select the side that\u2019s down in the slicer or the first layer will be wrong."},
- {name:"CryoGrip Pro Frostbite",maker:"BIGTREETECH",cls:"frost",tag:"Owned",own:true,
+ {name:"CryoGrip Pro Frostbite",hi:"pla",maker:"BIGTREETECH",cls:"frost",tag:"Owned",own:true,
   best:"Maximum grip for PLA and PETG at near-room-temperature beds. Grip index 10.",
   finish:"Rough texture",pla:"30\u201350",petg:"50\u201370",abs:"\u2014",materials:"PLA and PETG only",clean:"Water and soap only",
   warn:"Nothing else \u2014 not ABS, TPU or engineering filament. Releases only once fully cooled."},
- {name:"CryoGrip Pro Glacier",maker:"BIGTREETECH",cls:"glacier",tag:"Optional",
+ {name:"CryoGrip Pro Glacier",hi:"materials",maker:"BIGTREETECH",cls:"glacier",tag:"Optional",
   best:"The engineering version: cool-bed PA, ABS and anything under 300\u00b0C nozzle, smoother bottom. Grip index 8.",
   finish:"Smooth texture",pla:"45\u201355",petg:"60\u201375",abs:"cool bed \u00b7 see spec",materials:"All materials with nozzle temps below 300\u00b0C",clean:"Water and soap, or alcohol",
   warn:"Less grip than Frostbite on PLA/PETG; some parts want a brim."},
@@ -890,17 +891,17 @@ const MATRIX={
 };
 function renderPlates(){
   const rows=[
-    ["Best for",p=>p.best],
-    ["Bottom",p=>p.finish],
-    ["PLA bed",p=>`<b>${p.pla}</b><small>\u00b0C</small>`,"temps"],
-    ["PETG bed",p=>`<b>${p.petg}</b><small>\u00b0C</small>`,"temps"],
-    ["ABS bed",p=>`<b>${p.abs}</b><small>\u00b0C</small>`,"temps"],
-    ["Materials",p=>p.materials],
-    ["Cleaning",p=>p.clean],
-    ["Watch out",p=>p.warn,"warn"],
+    ["Best for",p=>p.best,"","best"],
+    ["Bottom",p=>p.finish,"","finish"],
+    ["PLA bed",p=>`<b>${p.pla}</b><small>\u00b0C</small>`,"temps","pla"],
+    ["PETG bed",p=>`<b>${p.petg}</b><small>\u00b0C</small>`,"temps","petg"],
+    ["ABS bed",p=>`<b>${p.abs}</b><small>\u00b0C</small>`,"temps","abs"],
+    ["Materials",p=>p.materials,"","materials"],
+    ["Cleaning",p=>p.clean,"","clean"],
+    ["Watch out",p=>p.warn,"warn","warn"],
   ];
   $("#plates").innerHTML=`<tr><th></th>${PLATES.map(p=>`<th><div class="sw swatch ${p.cls}"><span class="tag ${p.own?"own":""}">${p.tag}</span></div><span class="nm">${p.name}</span><span class="mk">${p.maker}</span></th>`).join("")}</tr>`+
-    rows.map(([k,f,c])=>`<tr><td>${k}</td>${PLATES.map(p=>`<td class="${c||""}">${f(p)}</td>`).join("")}</tr>`).join("");
+    rows.map(([k,f,c,key])=>`<tr><td>${k}</td>${PLATES.map(p=>`<td class="${c||""}${p.hi===key?" hi":""}">${f(p)}</td>`).join("")}</tr>`).join("");
   const sym={y:'<span class="y">\u2713</span>',g:'<span class="g">G</span>',n:'<span class="n">\u2013</span>'};
   $("#matrix").innerHTML=`<tr><th>Material</th>${MATRIX.cols.map(c=>`<th>${c}</th>`).join("")}</tr>`+MATRIX.rows.map((r,i)=>`<tr><td>${r}</td>${MATRIX.v[i].map(v=>`<td>${sym[v]}</td>`).join("")}</tr>`).join("");
 }

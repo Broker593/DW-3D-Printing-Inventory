@@ -8,7 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
-<meta name="build" content="1789329482">
+<meta name="build" content="1789332395">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -211,14 +211,22 @@
   .cmp td.temps small{display:block;font-size:10px;color:var(--muted)}
   .cmp td.warn{font-size:11.5px;color:var(--muted)}
   .cmp td.hi{background:var(--fill);box-shadow:inset 3px 0 0 var(--red);font-weight:600}
+
+  .linkbtn{border:none;background:none;font:inherit;color:var(--red);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
+  .archive{margin:12px 0 4px}
+  .archive .matrix td:first-child{white-space:nowrap}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="mast">
-  <div class="top"><span><b>Vol. 1 &middot; No. 1</b> &nbsp;&middot;&nbsp; September 2026</span><span>Fishtown, Philadelphia &middot; Updated Sept 13, 2026</span></div>
+  <div class="top"><span><b id="volNo">Vol. 1 &middot; No. 6</b> &nbsp;&middot;&nbsp; <span id="volMonth">September 2026</span> &nbsp;&middot;&nbsp; <button class="linkbtn" id="priorBtn">Prior volumes</button></span><span>Fishtown, Philadelphia &middot; Updated Sept 13, 2026</span></div>
   <h1>DW&rsquo;s 3D Print <span>Supply</span> Inventory</h1>
   <div class="dek">Every roll, hotend, and magnet on the shelf &mdash; catalogued from Bambu, Amazon, and Ali orders.</div>
+</div>
+<div class="archive" id="archive" hidden>
+  <div class="spend-hd"><div class="lbl">Prior volumes<small>Month-end figures, as purchased \u2014 rolls used since are not deducted</small></div></div>
+  <div class="matrix-wrap"><table class="matrix" id="archiveTable"></table></div>
 </div>
 <div class="tabs" role="tablist"><button class="on" data-v="overview" role="tab">Overview</button><button data-v="inventory" role="tab">Inventory</button><button data-v="plates" role="tab">Plates</button></div>
 <div class="view on" id="view-overview">
@@ -913,6 +921,35 @@ function renderPlates(){
   $("#matrix").innerHTML=`<tr><th>Material</th>${MATRIX.cols.map(c=>`<th>${c}</th>`).join("")}</tr>`+MATRIX.rows.map((r,i)=>`<tr><td>${r}</td>${MATRIX.v[i].map(v=>`<td>${sym[v]}</td>`).join("")}</tr>`).join("");
 }
 renderPlates();
+
+// ---- volumes: current issue + month-end archive computed from purchase dates ----
+(function(){
+  const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const START={y:2026,m:3}; // April 2026 = Vol. 1, No. 1
+  const now=new Date(); const y=now.getFullYear(), m=now.getMonth();
+  const issueNo=(y-START.y)*12+(m-START.m)+1;
+  document.getElementById("volNo").innerHTML=`Vol. ${y-START.y+1} &middot; No. ${issueNo}`;
+  document.getElementById("volMonth").textContent=`${MONTHS[m]} ${y}`;
+  const MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  function magDate(s){const r=/([A-Z][a-z]{2}) (\d{1,2}), (\d{4})/.exec(s);if(r)return `${r[3]}-${String(MON[r[1]]+1).padStart(2,"0")}-${r[2].padStart(2,"0")}`;const y=/\((\d{4})\)/.exec(s);return y?(y[1]<"2026"?`${y[1]}-12-31`:"2026-04-01"):"";}
+  function statsAt(cut){ // cut = "YYYY-MM-DD" inclusive
+    const kgOf=(f,c)=>{const d=DATA.find(x=>x.fam===f&&x.color===c);return d?d.kg:1;};
+    let rolls=0,kg=0,hot=0;const colors=new Set();
+    DATES.forEach(([dt,f,c,fm,q])=>{if(dt>cut)return;
+      if(/Hotend/.test(f))hot+=q; else if(f==="Build Plates")return; else{rolls+=q;kg+=q*kgOf(f,c);colors.add(f+"|"+c);}});
+    let mags=0;[...MAG_DISCS,...MAG_OTHER].forEach(mm=>mm.src.forEach(s=>{if(s[3]==="Owned"&&magDate(s[0])&&magDate(s[0])<=cut)mags+=s[2];}));
+    return {rolls,kg,colors:colors.size,hot,mags};
+  }
+  const rows=[];
+  for(let yy=START.y,mm=START.m;(yy<y)||(yy===y&&mm<m);mm++){if(mm>11){mm=0;yy++;}
+    const last=new Date(yy,mm+1,0).getDate();const cut=`${yy}-${String(mm+1).padStart(2,"0")}-${String(last).padStart(2,"0")}`;
+    const n=(yy-START.y)*12+(mm-START.m)+1;rows.push([`Vol. ${yy-START.y+1} \u00b7 No. ${n}`,`${MONTHS[mm]} ${yy}`,statsAt(cut)]);}
+  const tbl=document.getElementById("archiveTable");
+  tbl.innerHTML=`<tr><th>Issue</th><th>Month</th><th>Rolls</th><th>kg</th><th>Colors</th><th>Hotends</th><th>Magnets</th></tr>`+
+    rows.reverse().map(([iss,mo,s])=>`<tr><td>${iss}</td><td style="text-align:left">${mo}</td><td>${s.rolls}</td><td>${s.kg%1?s.kg.toFixed(1):s.kg}</td><td>${s.colors}</td><td>${s.hot}</td><td>${s.mags.toLocaleString("en-US")}</td></tr>`).join("");
+  const btn=document.getElementById("priorBtn"),arc=document.getElementById("archive");
+  btn.addEventListener("click",()=>{arc.hidden=!arc.hidden;btn.textContent=arc.hidden?"Prior volumes":"Hide prior volumes";});
+})();
 
 // self-refresh for home-screen / cached copies: reload if the live file has a newer build stamp
 (function(){

@@ -8,7 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
-<meta name="build" content="1789326049">
+<meta name="build" content="1789326077">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -426,7 +426,7 @@ const DATA = [
  {fam:"H2C Left Hotends (Standard)",grp:"Parts",color:"0.4mm Hardened Steel",code:"",src:"Included with H2C",hex:"#5F646B",fmt:"Part",img:"https://store.bblcdn.com/s7/default/e7253f40ef9140d4b4956cc15f5839b5/hotend-1.png",qty:1,kg:0},
  {fam:"H2C Left Hotends (Standard)",grp:"Parts",color:"0.2mm Stainless Steel",code:"",src:"Utility bundle",hex:"#9CA1A8",fmt:"Part",img:"https://store.bblcdn.com/s7/default/e7253f40ef9140d4b4956cc15f5839b5/hotend-1.png",qty:1,kg:0},
  {fam:"H2C Left Hotends (Standard)",grp:"Parts",color:"0.6mm Hardened Steel",code:"",src:"Utility bundle",hex:"#43474D",fmt:"Part",img:"https://store.bblcdn.com/s7/default/e7253f40ef9140d4b4956cc15f5839b5/hotend-1.png",qty:1,kg:0},
- {fam:"Build Plates",grp:"Parts",color:"Panda CryoGrip Pro \u2014 H2C/H2D",code:"",src:"BIGTREETECH \u00b7 Ali",hex:"#2F3640",fmt:"Part",img:"",qty:1,kg:0},
+ {fam:"Build Plates",grp:"Parts",color:"Panda CryoGrip Pro Glacier \u2014 H2C/H2D",code:"",src:"BIGTREETECH \u00b7 Ali",hex:"#2F3640",fmt:"Part",img:"",qty:1,kg:0},
 ];
 const B="https://us.store.bambulab.com/products/";
 const A=q=>"https://www.amazon.com/s?k="+encodeURIComponent(q);
@@ -767,7 +767,7 @@ const SPEND=[
  ["Hotends",139.98,"#111",""],
  ["AMS units",139.00,"#555","2 on hand \u2014 AMS HT priced; AMS 2 Pro at combo price pending"],
  ["Magnets",99.93,"#8a8a8a",""],
- ["Build plates",32.85,"#bdbdbd","CryoGrip Pro for H2C"],
+ ["Build plates",32.85,"#bdbdbd","CryoGrip Pro Glacier for H2C"],
 ];
 const SPEND_TOTAL=SPEND.reduce((a,s)=>a+s[1],0);
 const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
@@ -875,11 +875,11 @@ const PLATES=[
   best:"Textured on one face, smooth on the other. Flip it for the job.",
   finish:"Rough or smooth, per side",pla:"55\u201365",petg:"70\u201380",abs:"90\u2013100",materials:"As each surface above",clean:"Soap + water (textured); IPA (smooth)",
   warn:"Select the side that\u2019s down in the slicer or the first layer will be wrong."},
- {name:"CryoGrip Pro Frostbite",hi:"pla",maker:"BIGTREETECH",cls:"frost",tag:"Owned",own:true,
+ {name:"CryoGrip Pro Frostbite",hi:"pla",maker:"BIGTREETECH",cls:"frost",tag:"Optional",
   best:"Maximum grip for PLA and PETG at near-room-temperature beds. Grip index 10.",
   finish:"Rough texture",pla:"30\u201350",petg:"50\u201370",abs:"\u2014",materials:"PLA and PETG only",clean:"Water and soap only",
   warn:"Nothing else \u2014 not ABS, TPU or engineering filament. Releases only once fully cooled."},
- {name:"CryoGrip Pro Glacier",hi:"materials",maker:"BIGTREETECH",cls:"glacier",tag:"Optional",
+ {name:"CryoGrip Pro Glacier",hi:"materials",maker:"BIGTREETECH",cls:"glacier",tag:"Owned",own:true,
   best:"The engineering version: cool-bed PA, ABS and anything under 300\u00b0C nozzle, smoother bottom. Grip index 8.",
   finish:"Smooth texture",pla:"45\u201355",petg:"60\u201375",abs:"cool bed \u00b7 see spec",materials:"All materials with nozzle temps below 300\u00b0C",clean:"Water and soap, or alcohol",
   warn:"Less grip than Frostbite on PLA/PETG; some parts want a brim."},

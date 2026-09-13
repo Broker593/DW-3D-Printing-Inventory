@@ -8,7 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
-<meta name="build" content="1789332395">
+<meta name="build" content="1789333340">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -215,6 +215,22 @@
   .linkbtn{border:none;background:none;font:inherit;color:var(--red);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
   .archive{margin:12px 0 4px}
   .archive .matrix td:first-child{white-space:nowrap}
+
+  .vseg{margin:0 0 18px}
+  .vchart{margin:0 0 22px}
+  .vchart .lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+  .vchart svg{width:100%;height:auto;display:block}
+  .vchart .axis{stroke:var(--rule);stroke-width:1}
+  .vchart .grid{stroke:var(--hair);stroke-width:1}
+  .vchart .bar{fill:var(--ink)}
+  .vchart .bar2{fill:var(--red)}
+  .vchart .tick{font:10px Inter,sans-serif;fill:var(--muted)}
+  .vchart .val{font:12px Anton,Impact,sans-serif;fill:var(--ink)}
+  .vchart .val2{font:12px Anton,Impact,sans-serif;fill:var(--red)}
+  .vchart .line{fill:none;stroke:var(--red);stroke-width:2}
+  .vchart .pt{fill:var(--bg);stroke:var(--red);stroke-width:2}
+  .vlegend{display:flex;gap:16px;font-size:11px;color:var(--muted);margin-top:6px}
+  .vlegend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
 </style>
 </head>
 <body>
@@ -224,9 +240,12 @@
   <h1>DW&rsquo;s 3D Print <span>Supply</span> Inventory</h1>
   <div class="dek">Every roll, hotend, and magnet on the shelf &mdash; catalogued from Bambu, Amazon, and Ali orders.</div>
 </div>
-<div class="archive" id="archive" hidden>
-  <div class="spend-hd"><div class="lbl">Prior volumes<small>Month-end figures, as purchased \u2014 rolls used since are not deducted</small></div></div>
-  <div class="matrix-wrap"><table class="matrix" id="archiveTable"></table></div>
+<div class="view" id="view-volumes">
+  <div class="section-h"><h2>Prior volumes</h2><span><button class="linkbtn" id="backBtn">&larr; Back to current issue</button></span></div>
+  <p class="lede">Month-end figures for every issue since April 2026, as purchased \u2014 rolls used since are not deducted.</p>
+  <div class="segment vseg" id="vseg" style="max-width:260px"><button data-v="chart" class="on">Chart</button><button data-v="table">Table</button></div>
+  <div id="volChart"></div>
+  <div id="volTable" hidden><div class="matrix-wrap"><table class="matrix" id="archiveTable"></table></div></div>
 </div>
 <div class="tabs" role="tablist"><button class="on" data-v="overview" role="tab">Overview</button><button data-v="inventory" role="tab">Inventory</button><button data-v="plates" role="tab">Plates</button></div>
 <div class="view on" id="view-overview">
@@ -931,8 +950,8 @@ renderPlates();
   document.getElementById("volNo").innerHTML=`Vol. ${y-START.y+1} &middot; No. ${issueNo}`;
   document.getElementById("volMonth").textContent=`${MONTHS[m]} ${y}`;
   const MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-  function magDate(s){const r=/([A-Z][a-z]{2}) (\d{1,2}), (\d{4})/.exec(s);if(r)return `${r[3]}-${String(MON[r[1]]+1).padStart(2,"0")}-${r[2].padStart(2,"0")}`;const y=/\((\d{4})\)/.exec(s);return y?(y[1]<"2026"?`${y[1]}-12-31`:"2026-04-01"):"";}
-  function statsAt(cut){ // cut = "YYYY-MM-DD" inclusive
+  function magDate(s){const r=/([A-Z][a-z]{2}) (\d{1,2}), (\d{4})/.exec(s);if(r)return `${r[3]}-${String(MON[r[1]]+1).padStart(2,"0")}-${r[2].padStart(2,"0")}`;const yy=/\((\d{4})\)/.exec(s);return yy?(yy[1]<"2026"?`${yy[1]}-12-31`:"2026-04-01"):"";}
+  function statsAt(cut){
     const kgOf=(f,c)=>{const d=DATA.find(x=>x.fam===f&&x.color===c);return d?d.kg:1;};
     let rolls=0,kg=0,hot=0;const colors=new Set();
     DATES.forEach(([dt,f,c,fm,q])=>{if(dt>cut)return;
@@ -943,12 +962,29 @@ renderPlates();
   const rows=[];
   for(let yy=START.y,mm=START.m;(yy<y)||(yy===y&&mm<m);mm++){if(mm>11){mm=0;yy++;}
     const last=new Date(yy,mm+1,0).getDate();const cut=`${yy}-${String(mm+1).padStart(2,"0")}-${String(last).padStart(2,"0")}`;
-    const n=(yy-START.y)*12+(mm-START.m)+1;rows.push([`Vol. ${yy-START.y+1} \u00b7 No. ${n}`,`${MONTHS[mm]} ${yy}`,statsAt(cut)]);}
-  const tbl=document.getElementById("archiveTable");
-  tbl.innerHTML=`<tr><th>Issue</th><th>Month</th><th>Rolls</th><th>kg</th><th>Colors</th><th>Hotends</th><th>Magnets</th></tr>`+
-    rows.reverse().map(([iss,mo,s])=>`<tr><td>${iss}</td><td style="text-align:left">${mo}</td><td>${s.rolls}</td><td>${s.kg%1?s.kg.toFixed(1):s.kg}</td><td>${s.colors}</td><td>${s.hot}</td><td>${s.mags.toLocaleString("en-US")}</td></tr>`).join("");
-  const btn=document.getElementById("priorBtn"),arc=document.getElementById("archive");
-  btn.addEventListener("click",()=>{arc.hidden=!arc.hidden;btn.textContent=arc.hidden?"Prior volumes":"Hide prior volumes";});
+    const n=(yy-START.y)*12+(mm-START.m)+1;rows.push({iss:`No. ${n}`,mo:`${MONTHS[mm].slice(0,3)} ${yy}`,full:`${MONTHS[mm]} ${yy}`,s:statsAt(cut)});}
+  // table (newest first)
+  document.getElementById("archiveTable").innerHTML=`<tr><th>Issue</th><th style="text-align:left">Month</th><th>Rolls</th><th>kg</th><th>Colors</th><th>Hotends</th><th>Magnets</th></tr>`+
+    rows.slice().reverse().map(r=>`<tr><td>${r.iss}</td><td style="text-align:left">${r.full}</td><td>${r.s.rolls}</td><td>${r.s.kg%1?r.s.kg.toFixed(1):r.s.kg}</td><td>${r.s.colors}</td><td>${r.s.hot}</td><td>${r.s.mags.toLocaleString("en-US")}</td></tr>`).join("");
+  // charts
+  function barChart(title,key1,lab1,key2,lab2){
+    const W=700,H=220,L=36,R=12,T=26,B=34,n=rows.length,gw=(W-L-R)/n,bw=Math.min(28,gw*0.32);
+    const max=Math.max(...rows.map(r=>Math.max(r.s[key1],key2?r.s[key2]:0)),1);
+    const yv=v=>T+(H-T-B)*(1-v/max);
+    let g="";for(let i=0;i<=4;i++){const v=max*i/4,yy=yv(v);g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text class="tick" x="${L-6}" y="${yy+3}" text-anchor="end">${Math.round(v)}</text>`;}
+    let bars="";rows.forEach((r,i)=>{const cx=L+gw*i+gw/2;const x1=key2?cx-bw-2:cx-bw/2;
+      bars+=`<rect class="bar" x="${x1}" y="${yv(r.s[key1])}" width="${bw}" height="${H-B-yv(r.s[key1])}"/><text class="val" x="${x1+bw/2}" y="${yv(r.s[key1])-4}" text-anchor="middle">${r.s[key1].toLocaleString("en-US")}</text>`;
+      if(key2)bars+=`<rect class="bar2" x="${cx+2}" y="${yv(r.s[key2])}" width="${bw}" height="${H-B-yv(r.s[key2])}"/><text class="val2" x="${cx+2+bw/2}" y="${yv(r.s[key2])-4}" text-anchor="middle">${r.s[key2]}</text>`;
+      bars+=`<text class="tick" x="${cx}" y="${H-B+14}" text-anchor="middle">${r.mo}</text><text class="tick" x="${cx}" y="${H-B+26}" text-anchor="middle">${r.iss}</text>`;});
+    return `<div class="vchart"><div class="lbl">${title}</div><svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${g}<line class="axis" x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}"/>${bars}</svg><div class="vlegend"><span><i style="background:var(--ink)"></i>${lab1}</span>${key2?`<span><i style="background:var(--red)"></i>${lab2}</span>`:""}</div></div>`;
+  }
+  document.getElementById("volChart").innerHTML=barChart("Rolls and colors on the shelf, month-end","rolls","Rolls","colors","Colors")+barChart("Magnets, month-end","mags","Magnets")+barChart("Hotends, month-end","hot","Hotends");
+  // navigation
+  const btn=document.getElementById("priorBtn"),back=document.getElementById("backBtn"),tabs=document.querySelector(".tabs"),vol=document.getElementById("view-volumes");
+  let prev=null;
+  btn.addEventListener("click",()=>{prev=document.querySelector(".view.on");document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));vol.classList.add("on");tabs.style.display="none";hidePop();window.scrollTo({top:0});});
+  back.addEventListener("click",()=>{vol.classList.remove("on");(prev||document.getElementById("view-overview")).classList.add("on");tabs.style.display="";window.scrollTo({top:0});});
+  document.getElementById("vseg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;document.querySelectorAll("#vseg button").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("volChart").hidden=b.dataset.v!=="chart";document.getElementById("volTable").hidden=b.dataset.v!=="table";});
 })();
 
 // self-refresh for home-screen / cached copies: reload if the live file has a newer build stamp

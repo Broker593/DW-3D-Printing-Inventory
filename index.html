@@ -8,7 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
-<meta name="build" content="1789326077">
+<meta name="build" content="1789327771">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -120,13 +120,13 @@
   .thead .lead{flex:1;min-width:0}
   .thead .types button{border:none;background:none;font:inherit;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   .thead .types button.on{color:var(--red)}
-  .thead .stepper-ghost{width:34px;flex:none}
+  .thead .stepper-ghost{width:94px;flex:none}
   @media (max-width:520px){
     .types{grid-template-columns:repeat(5,24px) 44px}
     .thead{align-items:flex-end;padding-top:10px}.thead .types{align-items:end}
     .thead .types button{font-size:9px;writing-mode:vertical-rl;transform:rotate(180deg);height:58px;line-height:1;padding:0;overflow:visible;text-overflow:clip;justify-self:center}
     .types span{font-size:12px}.types span.o{font-size:8px}
-    .row{gap:8px}.thead{gap:8px}.thead .stepper-ghost{width:30px}
+    .row{gap:8px}.thead{gap:8px}.thead .stepper-ghost{width:88px}
   }
   .famlabel{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:9px 12px 3px;background:var(--fill)}
   .famlabel+.row::before{display:none}
@@ -158,6 +158,7 @@
   .tabs button{border:none;background:none;font:inherit;font-family:Anton,Impact,sans-serif;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 18px 8px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
   .tabs button.on{color:var(--ink);border-bottom-color:var(--red)}
   .view{display:none}.view.on{display:block}
+  .when{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;width:52px;text-align:right;flex:none}
   .count{font-family:Anton,Impact,sans-serif;font-size:17px;min-width:34px;text-align:right;flex:none;letter-spacing:.02em}
   .count.zero{color:var(--muted)}
   .toolbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0 8px;border-bottom:1px solid var(--rule);margin-bottom:22px}
@@ -256,7 +257,7 @@
 <input class="search" id="q" type="search" placeholder="Search" autocomplete="off">
 <div class="sortrow"><span>Sort</span>
   <div class="segment mini" id="sort">
-    <button data-s="type" class="on">Type</button><button data-s="hue">Hue</button><button data-s="bought">Purchased</button><button data-s="name">Name</button>
+    <button data-s="type" class="on">Type</button><button data-s="hue">Hue</button><button data-s="date">Date</button><button data-s="bought">Qty</button><button data-s="name">Name</button>
   </div>
 </div>
 <div class="segment" id="segment">
@@ -492,6 +493,8 @@ function colorFamily(L,C,h){
   if(h<285)return "Blue";
   return "Purple";
 }
+const DATES=[["2026-04-12","PLA Silk+","Candy Red","Spool",1],["2026-04-12","ABS","Silver","Spool",1],["2026-04-12","PETG HF","Orange","Spool",1],["2026-04-12","PETG HF","Yellow","Spool",1],["2026-04-12","PETG HF","White","Spool",1],["2026-04-12","PLA Matte","Matte Ash Gray","Spool",1],["2026-04-12","PLA Matte","Matte Ivory White","Spool",1],["2026-04-12","PLA Matte","Matte Charcoal","Spool",1],["2026-04-12","PETG Translucent","Clear","Spool",1],["2026-05-03","PLA Matte","Matte Nardo Gray","Refill",1],["2026-05-03","PLA Matte","Matte Marine Blue","Refill",1],["2026-05-03","PLA Matte","Matte Scarlet Red","Refill",1],["2026-05-03","PLA Matte","Matte Dark Blue","Refill",1],["2026-05-03","PLA Matte","Matte Desert Tan","Refill",1],["2026-05-03","PLA Basic","Blue Grey","Refill",1],["2026-05-03","PLA Basic","Mistletoe Green","Refill",1],["2026-05-03","PLA Basic","Maroon Red","Refill",1],["2026-05-03","PLA Basic","Yellow","Refill",1],["2026-05-03","PLA Basic","Cobalt Blue","Refill",1],["2026-05-03","PLA Tough+","Orange","Spool",1],["2026-05-03","PLA Aero","Gray","Spool",1],["2026-05-03","Support PLA (New)","White","Spool",1],["2026-05-03","ASA","Gray","Spool",1],["2026-05-03","PLA-CF","Lava Gray","Spool",1],["2026-05-03","TPU 90A","Black","Spool",1],["2026-05-03","TPU for AMS","Black","Spool",1],["2026-05-13","Support PLA/PETG","Nature","Spool",1],["2026-05-13","PLA Matte","Matte Charcoal","Refill",2],["2026-05-13","PLA Matte","Matte Ivory White","Refill",2],["2026-05-13","PLA Matte","Matte Marine Blue","Refill",1],["2026-05-13","PLA Matte","Matte Dark Blue","Refill",3],["2026-05-13","PLA Basic","Black","Refill",1],["2026-05-13","PLA Basic","Blue","Refill",1],["2026-05-13","PLA Basic","Jade White","Refill",2],["2026-05-13","PLA Basic","Blue Grey","Refill",1],["2026-05-13","PLA Basic","Maroon Red","Refill",1],["2026-05-13","PLA Basic","Cobalt Blue","Refill",1],["2026-05-13","PLA Wood","Black Walnut","Spool",1],["2026-06-01","PLA Matte","Matte Nardo Gray","Refill",1],["2026-06-01","PLA Matte","Matte Charcoal","Refill",1],["2026-06-01","PLA Matte","Matte Desert Tan","Refill",1],["2026-06-01","PLA Matte","Matte Ivory White","Spool",1],["2026-06-01","PLA Matte","Matte Charcoal","Spool",1],["2026-06-01","PLA Matte","Matte Ash Gray","Spool",1],["2026-06-01","PLA Matte","Matte Caramel","Refill",1],["2026-06-01","PLA Matte","Matte Dark Brown","Refill",1],["2026-06-01","PLA Matte","Matte Dark Chocolate","Refill",1],["2026-06-01","PLA Basic","Jade White","Spool",1],["2026-06-01","PLA Basic","Bambu Green","Spool",1],["2026-06-01","PLA Basic","Cocoa Brown","Spool",1],["2026-06-01","PLA Basic","Gray","Spool",1],["2026-06-01","PLA Glow","Glow Green","Spool",1],["2026-06-11","PLA Marble","Red Granite","Spool",1],["2026-06-11","PLA Marble","White Marble","Spool",1],["2026-06-30","PLA Matte","Matte Dark Red","Refill",1],["2026-06-30","PLA Matte","Matte Lemon Yellow","Refill",1],["2026-06-30","PLA Matte","Matte Terracotta","Refill",1],["2026-06-30","PLA Matte","Matte Charcoal","Spool",1],["2026-06-30","PLA Matte","Matte Ivory White","Spool",1],["2026-06-30","PLA Basic","Jade White","Spool",1],["2026-06-30","PLA Basic","Brown","Refill",1],["2026-06-30","PLA Basic","Blue","Spool",1],["2026-06-30","PLA Basic","Pumpkin Orange","Spool",1],["2026-06-30","PLA Basic","Red","Spool",1],["2026-06-30","PLA Sparkle","Onyx Black Sparkle","Spool",1],["2026-07-12","PLA Silk+","Silver","Spool",1],["2026-07-12","PLA Matte","Matte Dark Green","Refill",1],["2026-07-12","PLA Matte","Matte Bone White","Refill",1],["2026-07-12","PLA Basic","Beige","Refill",1],["2026-07-12","PLA Basic","Cyan","Refill",1],["2026-07-12","PLA Basic","Light Gray","Refill",1],["2026-07-12","PLA Basic","Sunflower Yellow","Spool",1],["2026-07-12","PLA Basic","Dark Gray","Refill",1],["2026-07-12","PLA Basic","Silver","Refill",1],["2026-07-12","PETG Basic","Reflex Blue","Spool",1],["2026-08-03","PLA Basic","Gold","Refill",1],["2026-08-03","PLA Basic","Bronze","Refill",1],["2026-08-03","PLA Basic","Indigo Purple","Spool",1],["2026-08-03","PLA Basic","Yellow","Refill",1],["2026-08-03","PLA Basic","Purple","Refill",1],["2026-08-03","PLA Basic","Bright Green","Refill",1],["2026-08-03","PLA Silk+","Titan Gray","Spool",1],["2026-08-03","PLA Silk+","Blue","Spool",1],["2026-08-03","PLA Silk+","White","Refill",1],["2026-08-03","PLA Matte","Matte Sakura Pink","Refill",1],["2026-08-03","PLA Matte","Matte Sky Blue","Refill",1],["2026-08-31","PLA Matte","Matte Charcoal","Spool",1],["2026-08-31","PLA Matte","Matte Grass Green","Refill",1],["2026-08-31","PLA Matte","Matte Ice Blue","Refill",1],["2026-08-31","PLA Matte","Matte Mandarin Orange","Spool",1],["2026-08-31","PETG Basic","White","Spool",1],["2026-08-31","PETG Basic","Gray","Spool",1],["2026-08-31","PETG Basic","Red","Spool",1],["2026-08-31","PETG Basic","Misty Blue","Spool",1],["2026-08-31","PETG Basic","Navy Blue","Spool",1],["2026-08-31","PLA Translucent","Ice Blue","Spool",1],["2026-06-07","Overture PLA","Black","Spool",1],["2026-06-07","Overture PETG","Black","Spool",1],["2026-06-10","eSUN PLA+","Bone White","Spool",1],["2026-06-10","eSUN PLA+","Fire Engine Red","Spool",1],["2026-06-10","Overture Matte PLA","Matte Light Brown","Spool",1],["2026-06-10","GIANTARM Silk PLA","Gold","Spool",1],["2026-06-10","Creality PETG","Black","Spool",1],["2026-07-17","Polymaker PET-CF","Black","Spool",1],["2026-07-17","Flashforge PETG-CF","Midnight Blue","Spool",1],["2026-07-23","Polymaker Matte PLA","Marble Sandstone","Spool",1],["2026-07-23","SUNLU Marble PLA","Cool White","Spool",1],["2026-07-23","SUNLU Marble PLA","Light Grey","Spool",1],["2026-07-23","SUNLU Marble PLA","Bone Beige","Spool",1],["2026-07-23","SUNLU Marble PLA","Brick Red","Spool",1],["2026-07-23","SUNLU Wood PLA","Wood Natural","Spool",1],["2026-07-23","SUNLU Wood PLA","Wood Cherry","Spool",1],["2026-07-23","SUNLU Wood PLA","Wood Maple","Spool",1],["2026-07-23","SUNLU Wood PLA","Wood Walnut","Spool",1],["2026-07-24","3D-Fuel PCTG","Natural","Spool",1],["2026-08-26","ANYCUBIC PLA","Texture Red","Spool",2],["2026-08-26","ANYCUBIC PLA","Black","Spool",2],["2026-08-26","Build Plates","Panda CryoGrip Pro Glacier — H2C/H2D","Part",1],["2026-07-30","H2C Right Hotends (Induction)","0.4mm Hardened Steel","Part",6],["2026-07-30","H2C Right Hotends (Induction)","0.2mm Induction","Part",1],["2026-07-30","H2C Right Hotends (Induction)","0.6mm Induction","Part",1],["2026-08-03","H2C Right Hotends (Induction)","0.2mm Stainless Steel","Part",3],["2026-08-31","H2C Right Hotends (Induction)","0.8mm High Flow Hardened","Part",1],["2026-08-31","H2C Right Hotends (Induction)","0.6mm High Flow Hardened","Part",1],["2026-07-30","H2C Left Hotends (Standard)","0.4mm Hardened Steel","Part",2],["2026-07-30","H2C Left Hotends (Standard)","0.2mm Stainless Steel","Part",1],["2026-07-30","H2C Left Hotends (Standard)","0.6mm Hardened Steel","Part",1]];
+const fmtDate=s=>{const [y,m,d]=s.split("-");return `${+m}/${+d}/${y.slice(2)}`;};
 DATA.forEach(d=>{
   d.id=(d.code||d.fam+"-"+d.color)+"-"+d.fmt; d.kg=(d.kg===undefined?1:d.kg); d.base=d.qty;
   d.type=TYPE_OF[d.fam]||null; d.brand=BRAND_OF[d.fam]||"Bambu Lab"; d.sec=d.grp==="PLA"?"PLA":d.fam;
@@ -502,6 +505,8 @@ DATA.forEach(d=>{
   const L=.2104542553*l_+.7936177850*m_-.0040720468*s_,A=1.9779984951*l_-2.4285922050*m_+.4505937099*s_,B=.0259040371*l_+.7827717662*m_-.8086757660*s_;
   d.L=L;d.C=Math.hypot(A,B);let h=Math.atan2(B,A)*180/Math.PI;if(h<0)h+=360;d.h=h;
   d.family=colorFamily(L,d.C,h);
+  d.dates=DATES.filter(x=>x[1]===d.fam&&x[3]===d.fmt&&(x[2]===d.color||(d.grp==="Parts"&&d.fam==="Build Plates"))).map(x=>[x[0],x[4]]).sort();
+  d.last=d.dates.length?d.dates[d.dates.length-1][0]:"";
 });
 
 
@@ -521,6 +526,7 @@ function visible(){
 function cmp(a,b){
   if(sort==="name")return a.color.localeCompare(b.color);
   if(sort==="bought")return (b.base-a.base)||(b.qty-a.qty)||a.color.localeCompare(b.color);
+  if(sort==="date")return (b.last||"").localeCompare(a.last||"")||(b.qty-a.qty)||a.color.localeCompare(b.color);
   if(sort==="hue"){
     const fa=FAMILIES.indexOf(a.family),fb=FAMILIES.indexOf(b.family);
     return (fa-fb)||(b.L-a.L)||a.color.localeCompare(b.color);
@@ -691,7 +697,7 @@ function renderList(){
     if(sname!=="PLA"&&items[0].grp==="Parts"){/* parts stay as-is */}
     else{
       const m=new Map();
-      items.forEach(d=>{const k=d.fam+"|"+d.color;if(!m.has(k))m.set(k,Object.assign({},d,{items:[d],qty:0,base:0}));const g=m.get(k);g.items.push(d);g.qty+=d.qty;g.base+=d.base;});
+      items.forEach(d=>{const k=d.fam+"|"+d.color;if(!m.has(k))m.set(k,Object.assign({},d,{items:[d],qty:0,base:0,dates:[]}));const g=m.get(k);g.items.push(d);g.qty+=d.qty;g.base+=d.base;g.dates=g.dates.concat(d.dates).sort();g.last=g.dates.length?g.dates[g.dates.length-1][0]:"";});
       items=[...m.values()].map(g=>{g.items=g.items.slice(1);return g;});
     }
     items.sort(cmp);
@@ -716,7 +722,7 @@ function renderList(){
       row.innerHTML=`<div class="dot" style="background:${d.hex}"></div>
         <div class="meta"><div class="name">${d.color}</div><div class="sub">${subline(d)}</div></div>
         ${sname==="PLA"?`<div class="types">${typeCells(d)}</div>`:""}
-        <div class="count ${d.qty===0?"zero":""}">${d.qty}</div>`;
+        <div class="when">${d.last?fmtDate(d.last):""}</div><div class="count ${d.qty===0?"zero":""}">${d.qty}</div>`;
       attachPop(row,d);card.appendChild(row);
     });
     host.appendChild(sec);
@@ -735,7 +741,8 @@ function popHTML(d){
     if(d.items&&d.items.length>1){const s=d.items.filter(x=>x.qty>0).map(x=>`${x.fmt} \u00d7${x.qty}`).join(" \u00b7 ");rows.push(["Format",s||"\u2014"]);}
     else if(d.fmt==="Refill"||d.fmt==="Spool")rows.push(["Format",d.fmt]);
     rows.push(["Roll",d.kg+" kg"]);rows.push(["Brand",d.brand]);
-    rows.push(["Source",d.src||"Bambu Lab store"]);rows.push(["Purchased",isCat(d)?"\u2014":d.base]);
+    rows.push(["Source",d.src||"Bambu Lab store"]);
+    rows.push(["Purchased",isCat(d)?"\u2014":(d.dates.length?d.dates.map(([dt,n])=>fmtDate(dt)+(n>1?" \u00d7"+n:"")).join(" \u00b7 "):d.base)]);
   }else rows.push(["Source",d.src||""]);
   rows.push(["On hand",d.qty]);
   return `<div class="pop-top">${visual}<div><div class="pop-title">${d.color}</div><div class="pop-fam">${d.fam}</div></div></div>

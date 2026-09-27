@@ -8,7 +8,7 @@
 <meta property="og:title" content="DW’s 3D Print Supply Inventory">
 <meta property="og:description" content="124 rolls, 17 hotends, 1,762 magnets — the whole shelf, by the numbers.">
 <meta property="og:type" content="website">
-<meta name="build" content="1790530182">
+<meta name="build" content="1790530477">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23c8102e' stroke-width='9'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -96,6 +96,7 @@
   @media (prefers-color-scheme:dark){.segment button.on{background:var(--ink);color:#111}}
   .sortrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
   .sortrow>span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);flex:none;width:34px}
+  @media (max-width:520px){#segment{display:grid;grid-template-columns:repeat(4,1fr)}#segment button{border-right:1px solid var(--rule)}#segment button:nth-child(4n){border-right:none}#segment button:nth-child(-n+4){border-bottom:1px solid var(--rule)}}
   .segment.mini{flex:1;margin:0}.segment.mini button{font-size:10px;padding:6px 0}
 
   /* departments */
@@ -239,7 +240,7 @@
 <div class="mast">
   <div class="top"><span><b id="volNo">Vol. 1 &middot; No. 6</b> &nbsp;&middot;&nbsp; <span id="volMonth">September 2026</span></span><span>Fishtown, Philadelphia &middot; Updated Sept 27, 2026</span></div>
   <h1>DW&rsquo;s 3D Print <span>Supply</span> Inventory</h1>
-  <div class="dek">Every roll, hotend, and magnet on the shelf &mdash; catalogued from Bambu, Amazon, and Ali orders.</div>
+  <div class="dek">Every roll, hotend, magnet, and coin cell on the shelf &mdash; catalogued from Bambu, Amazon, and Ali orders.</div>
 </div>
 <div class="tabs" role="tablist"><button class="on" data-v="overview" role="tab">Overview</button><button data-v="inventory" role="tab">Inventory</button><button data-v="plates" role="tab">Plates</button><button data-v="volumes" role="tab">Volumes</button></div>
 <div class="view on" id="view-overview">
@@ -289,7 +290,7 @@
   </div>
 </div>
 <div class="segment" id="segment">
-  <button data-g="All" class="on">All</button><button data-g="PLA">PLA</button><button data-g="PETG">PETG</button><button data-g="Other">Other</button><button data-g="Parts">Parts</button><button data-g="Magnets">Magnets</button>
+  <button data-g="All" class="on">All</button><button data-g="PLA">PLA</button><button data-g="PETG">PETG</button><button data-g="Other">Other</button><button data-g="Parts">Parts</button><button data-g="Magnets">Magnets</button><button data-g="Batteries">Batteries</button>
 </div>
 </div>
 <div id="list"></div>
@@ -711,11 +712,103 @@ function renderMagnets(){
   note.innerHTML="Purchased orders only.";
   host.appendChild(note);
 }
+
+// ---- coin / button cells ------------------------------------------------
+// One entry per electrically-interchangeable type. src: [pack, label printed on that pack, count]
+const BAT=[
+ {id:"AG1", chem:"Alkaline",volt:"1.5V",ag:"AG1", lr:"LR621", num:"364",     equiv:["AG1","LR621","LR60","364","SR621","164"],       use:"Small watches, laser pointers, calculators", src:[["Thunderbolt 24-pk","364",4],["I&E 50-pk","AG1",10]]},
+ {id:"AG3", chem:"Alkaline",volt:"1.5V",ag:"AG3", lr:"LR41",  num:"392",     equiv:["AG3","LR41","392","384","192","SR41"],         use:"Thermometers, watches, small toys",           src:[["Thunderbolt 24-pk","392",4],["I&E 50-pk","AG3",10]]},
+ {id:"AG4", chem:"Alkaline",volt:"1.5V",ag:"AG4", lr:"LR626", num:"377",     equiv:["AG4","LR626","LR66","377","376","SR626"],      use:"Watches, small electronics",                  src:[["Thunderbolt 24-pk","377",4],["I&E 50-pk","AG4",5]]},
+ {id:"AG5", chem:"Alkaline",volt:"1.5V",ag:"AG5", lr:"LR754", num:"309/393", equiv:["AG5","LR754","LR48","309","393","SR48"],       use:"Watches, calculators",                        src:[["Thunderbolt 24-pk","309/393",4]]},
+ {id:"AG10",chem:"Alkaline",volt:"1.5V",ag:"AG10",lr:"LR1130",num:"389/390", equiv:["AG10","LR1130","LR54","389","390","SR1130"],   use:"Calculators, laser pointers, toys",           src:[["I&E 50-pk","AG10",10]]},
+ {id:"AG12",chem:"Alkaline",volt:"1.5V",ag:"AG12",lr:"LR43",  num:"386",     equiv:["AG12","LR43","386","301","SR43","1166A"],      use:"Watches, calculators, medical devices",       src:[["Thunderbolt 24-pk","386",4],["I&E 50-pk","AG12",5]]},
+ {id:"AG13",chem:"Alkaline",volt:"1.5V",ag:"AG13",lr:"LR44",  num:"357/303", equiv:["AG13","LR44","357","303","A76","SR44","1154"], use:"Calculators, key fobs, toys, calipers",       src:[["Thunderbolt 24-pk","357/303",4],["I&E 50-pk","AG13",7]]},
+ {id:"CR1620",chem:"Lithium",volt:"3V",equiv:["CR1620","DL1620","ECR1620"],   use:"Car key fobs, small remotes",          src:[["Lithium 25-pk","CR1620",5]]},
+ {id:"CR1632",chem:"Lithium",volt:"3V",equiv:["CR1632","DL1632","BR1632"],    use:"Key fobs, TPMS sensors, wearables",    src:[["Lithium 25-pk","CR1632",5]]},
+ {id:"CR2025",chem:"Lithium",volt:"3V",equiv:["CR2025","DL2025","ECR2025"],   use:"Remotes, key fobs, scales",            src:[["Lithium 25-pk","CR2025",5]]},
+ {id:"CR2032",chem:"Lithium",volt:"3V",equiv:["CR2032","DL2032","ECR2032"],   use:"Motherboards, remotes, key fobs, LED throwies", src:[["Lithium 25-pk","CR2032",5]]},
+ {id:"CR2450",chem:"Lithium",volt:"3V",equiv:["CR2450","DL2450","ECR2450"],   use:"Bike lights, sensors, larger remotes", src:[["Lithium 25-pk","CR2450",5]]},
+];
+const BAT_PACKS=[["Thunderbolt 24-piece button cell pack","6 sizes \u00b7 numeric labels (364, 392\u2026)",24],["I&E 50-piece alkaline button set","6 sizes \u00b7 AG labels",50],["CR lithium coin cell 25-piece pack","5 sizes \u00b7 CR1620 to CR2450",25]];
+let batSys="AG";
+const batCount=b=>b.src.reduce((a,s)=>a+s[2],0);
+const batLabel=b=>b.chem==="Lithium"?b.id:(batSys==="LR"?b.lr:batSys==="#"?b.num:b.ag);
+const batNum=b=>parseInt((b.chem==="Lithium"?b.id.slice(2):batLabel(b).replace(/^(AG|LR)/,"")),10);
+function batPopHTML(b){
+  const lab=batLabel(b);
+  const chain=b.equiv.map(e=>e===lab||lab.split("/").includes(e)?`<b style="color:var(--red)">${e}</b>`:e).join(" · ");
+  return `<div class="pop-top"><div class="pop-dot" style="background:linear-gradient(145deg,#d9d9d9,#8a8a8a);display:flex;align-items:center;justify-content:center;font-family:Anton,Impact,sans-serif;font-size:13px;color:#111">${b.volt}</div>
+    <div><div class="pop-title">${lab}</div><div class="pop-fam">${b.chem} · ${b.volt}</div></div></div>
+    <dl class="pop-grid"><dt>On hand</dt><dd>${batCount(b)} cells</dd>${b.src.map(([p,l,n])=>`<dt>${p}</dt><dd>${n} · marked ${l}</dd>`).join("")}</dl>
+    <div style="margin-top:10px;font-size:12px;line-height:1.5"><span style="color:var(--muted)">Same cell as:</span> ${chain}</div>
+    <div style="margin-top:6px;font-size:12px;color:var(--muted)">${b.use}</div>`;
+}
+function batBar(container,b,max){
+  const n=batCount(b);
+  const col=document.createElement("div");col.className="col";
+  col.innerHTML=`<div class="bar-n">${n}</div><div class="stack" style="display:flex;flex-direction:column-reverse;width:100%;max-width:34px"><div class="bar" style="height:${Math.max(6,Math.round(150*n/max))}px;border-radius:7px 7px 3px 3px"></div></div><div class="bar-x">${batLabel(b)}</div>`;
+  const stack=col.querySelector(".stack");
+  stack.addEventListener("mouseenter",()=>{clearTimeout(popTimer);popTimer=setTimeout(()=>{pop.innerHTML=batPopHTML(b);pop.style.display="block";const r=stack.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;let left=r.left+window.scrollX-pw/2+r.width/2;left=Math.max(window.scrollX+8,Math.min(left,window.scrollX+window.innerWidth-pw-8));let top=r.top+window.scrollY-ph-8;if(top<window.scrollY)top=r.bottom+window.scrollY+8;pop.style.left=left+"px";pop.style.top=top+"px";requestAnimationFrame(()=>pop.classList.add("show"));popRow=stack;},180);});
+  stack.addEventListener("mouseleave",()=>{clearTimeout(popTimer);popTimer=setTimeout(hidePop,150);});
+  stack.addEventListener("click",()=>{popRow===stack&&pop.classList.contains("show")?hidePop():stack.dispatchEvent(new Event("mouseenter"));});
+  container.appendChild(col);
+}
+function renderBatteries(){
+  const host=$("#list");host.innerHTML="";
+  const t=q.trim().toLowerCase().replace(/\s+/g,"");
+  const hit=b=>!t||b.equiv.some(e=>e.toLowerCase().includes(t))||b.id.toLowerCase().includes(t)||(b.num||"").toLowerCase().includes(t)||b.chem.toLowerCase().includes(t)||b.use.toLowerCase().includes(t.replace(/,/g,""));
+  const alk=BAT.filter(b=>b.chem==="Alkaline"&&hit(b)).sort((a,b)=>batNum(a)-batNum(b));
+  const lith=BAT.filter(b=>b.chem==="Lithium"&&hit(b)).sort((a,b)=>batNum(a)-batNum(b));
+  const total=BAT.reduce((a,b)=>a+batCount(b),0), alkTotal=BAT.filter(b=>b.chem==="Alkaline").reduce((a,b)=>a+batCount(b),0), lithTotal=total-alkTotal;
+  const max=Math.max(...BAT.map(batCount));
+  if(!alk.length&&!lith.length){host.innerHTML='<div class="card"><div class="empty">Nothing here</div></div>';return;}
+  // alkaline chart with label-system toggle
+  if(alk.length){
+    const sec=document.createElement("div");sec.className="section";
+    sec.innerHTML=`<div class="section-h"><h2>1.5V alkaline · by size</h2><span>${alkTotal} cells · ${BAT.filter(b=>b.chem==="Alkaline").length} types</span></div>
+     <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px 0;flex-wrap:wrap"><span class="sub" style="margin:0">Label by</span><div class="segment mini" id="batseg" style="margin:0;max-width:220px"><button data-b="AG"${batSys==="AG"?' class="on"':""}>AG</button><button data-b="LR"${batSys==="LR"?' class="on"':""}>LR</button><button data-b="#"${batSys==="#"?' class="on"':""}># only</button></div></div>
+     <div class="chart"></div><div class="legend"><span><i></i>On hand</span><span>Same cell, three naming systems — counts merge across packs</span></div></div>`;
+    const chart=sec.querySelector(".chart");alk.forEach(b=>batBar(chart,b,max));
+    sec.querySelector("#batseg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;batSys=b.dataset.b;renderBatteries();});
+    host.appendChild(sec);
+  }
+  if(lith.length){
+    const sec2=document.createElement("div");sec2.className="section";
+    sec2.innerHTML=`<div class="section-h"><h2>3V lithium coin</h2><span>${lithTotal} cells · ${BAT.filter(b=>b.chem==="Lithium").length} sizes</span></div><div class="card"><div class="chart"></div><div class="legend"><span><i></i>On hand</span><span>CR sizes are distinct — nothing merges</span></div></div>`;
+    const chart2=sec2.querySelector(".chart");lith.forEach(b=>batBar(chart2,b,max));
+    host.appendChild(sec2);
+  }
+  // list
+  const sec3=document.createElement("div");sec3.className="section";
+  sec3.innerHTML=`<div class="section-h"><h2>Every type</h2><span>${total} cells on hand</span></div><div class="card"></div>`;
+  const card=sec3.querySelector(".card");
+  [...alk,...lith].forEach(b=>{
+    const row=document.createElement("div");row.className="row";
+    const others=b.equiv.filter(e=>e!==batLabel(b)&&!batLabel(b).split("/").includes(e)).join(" · ");
+    row.innerHTML=`<div class="dot" style="background:linear-gradient(145deg,#d9d9d9,#8a8a8a);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#111">${b.volt}</div><div class="meta"><div class="name">${batLabel(b)}</div><div class="sub">${others} · ${b.src.map(s=>s[0]).join(", ")}</div></div><div class="sub" style="flex:none;font-variant-numeric:tabular-nums">${batCount(b)} cells</div>`;
+    row.addEventListener("mouseenter",()=>{clearTimeout(popTimer);popTimer=setTimeout(()=>{pop.innerHTML=batPopHTML(b);pop.style.display="block";const r=row.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;let left=r.left+window.scrollX+56;if(left+pw>window.scrollX+window.innerWidth-12)left=window.scrollX+window.innerWidth-pw-12;let top=r.bottom+window.scrollY+6;if(r.bottom+ph+12>window.innerHeight)top=r.top+window.scrollY-ph-6;pop.style.left=left+"px";pop.style.top=top+"px";requestAnimationFrame(()=>pop.classList.add("show"));popRow=row;},220);});
+    row.addEventListener("mouseleave",()=>{clearTimeout(popTimer);popTimer=setTimeout(hidePop,150);});
+    row.querySelector(".meta").addEventListener("click",()=>{popRow===row?hidePop():row.dispatchEvent(new Event("mouseenter"));});
+    card.appendChild(row);
+  });
+  host.appendChild(sec3);
+  // packs
+  const sec4=document.createElement("div");sec4.className="section";
+  sec4.innerHTML=`<div class="section-h"><h2>Packs</h2><span>${BAT_PACKS.length} packs · ${BAT_PACKS.reduce((a,p)=>a+p[2],0)} cells as sold</span></div><div class="card"></div>`;
+  const card4=sec4.querySelector(".card");
+  BAT_PACKS.forEach(([what,src,n])=>{const row=document.createElement("div");row.className="row";row.innerHTML=`<div class="meta"><div class="name">${what}</div><div class="sub">${src}</div></div><div class="sub" style="flex:none;font-variant-numeric:tabular-nums">${n} pcs</div>`;card4.appendChild(row);});
+  host.appendChild(sec4);
+  const note=document.createElement("div");note.className="note";
+  note.innerHTML="Counted from pack photos, June 2026. LR/AG cells are 1.5V alkaline; the SR-numbered equivalents (357, 386…) are 1.55V silver-oxide — same size, slightly different discharge. Two reads to verify: the Thunderbolt 377 label was partly hidden, and the AG13 strip was counted as 7 of 10.";
+  host.appendChild(note);
+}
 function renderList(){
   hidePop();
-  document.querySelector(".sortrow").style.display=seg==="Magnets"?"none":"";
+  document.querySelector(".sortrow").style.display=(seg==="Magnets"||seg==="Batteries")?"none":"";
   $("#q").style.display=seg==="Magnets"?"none":"";
+  $("#q").placeholder=seg==="Batteries"?"Search any code (LR44, 357, CR2032\u2026)":"Search";
   if(seg==="Magnets"){renderMagnets();return;}
+  if(seg==="Batteries"){renderBatteries();return;}
   const host=$("#list");host.innerHTML="";
   const rows=visible();
   if(!rows.length){host.innerHTML='<div class="card"><div class="empty">Nothing here</div></div>';return;}

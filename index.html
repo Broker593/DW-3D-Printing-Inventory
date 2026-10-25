@@ -901,7 +901,7 @@ function attachPop(row,d){
 // ---- spend by category (USD) -------------------------------------------
 // [label, amount, color, note, pending?]
 const SPEND=[
- ["Filament",1579.53,"#c8102e",""],
+ ["Filament",1627.51,"#c8102e",""],
  ["Hotends",139.98,"#111",""],
  ["AMS units",639.00,"#555","2 AMS 2 Pros, 1 AMS HT"],
  ["Magnets",125.91,"#8a8a8a",""],
@@ -937,7 +937,7 @@ function renderShelf(){
   });
 }
 // filament cost per kg — priced rolls only (pending Bambu orders excluded)
-const CPK=[["Bambu",1102.42,66,"67 rolls priced \u00b7 24 in pending orders, 14 on the other account not priced"],["Amazon",343.19,18.5,"19 rolls"],["Ali",46.82,4,"4 rolls"]];
+const CPK=[["Bambu",1102.42,66,"67 rolls priced \u00b7 24 in pending orders, 14 on the other account not priced"],["Amazon",478.27,25.5,"26 rolls"],["Ali",46.82,4,"4 rolls"]];
 function renderCPK(){
   $("#cpk").innerHTML=CPK.map(([k,usd,kg,n])=>{const v=usd/kg;return `<div><b>$${v.toFixed(2)}</b><span>${k} \u00b7 per kg</span><small>${n}</small></div>`;}).join("");
   const max=20, x=v=>Math.min(100,100*v/max);
